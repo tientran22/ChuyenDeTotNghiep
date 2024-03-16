@@ -1,18 +1,3 @@
-# Chuyên đề tốt nghiệp
-How to build and run project 
-Step 1: Git clone or download respo. 
-Step 2: Cd fj_be/fj_be  Update composer using command in terminal : 
-    composer install 
-    composer update
-Step 3: Create key project. Firstly create file .evn and then copy all data file .env.example to file .env 
-    php artisan key:generate 
-Step 4: Run server 
-    php artisan serve 
-Step 5:  Install npm  Build package 
-    npm install
-    npm run dev
-
-    # Chuyên Đề Tốt Nghiệp
 
 ## Cách Xây Dựng và Chạy Dự Án
 
@@ -26,3 +11,22 @@ Clone repository hoặc tải xuống mã nguồn.
 cd fj_be/fj_be
 composer install
 composer update
+
+
+###Bước 3: Tạo Khóa Dự Án
+
+Đầu tiên, tạo một tệp .env và sau đó sao chép tất cả dữ liệu từ .env.example sang .env.
+
+```bash
+php artisan key:generate
+
+###Bước 4: Chạy Máy Chủ
+
+```bash
+php artisan serve
+
+###Bước 5: Cài Đặt npm và Xây Dựng Gói
+
+```bash
+npm install
+npm run dev
