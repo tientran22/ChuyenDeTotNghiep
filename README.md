@@ -13,19 +13,19 @@ composer install
 composer update
 ```
 
-###Bước 3: Tạo Khóa Dự Án
+### Bước 3: Tạo Khóa Dự Án
 
 Đầu tiên, tạo một tệp .env và sau đó sao chép tất cả dữ liệu từ .env.example sang .env.
 
 ```bash
 php artisan key:generate
 ```
-###Bước 4: Chạy Máy Chủ
+### Bước 4: Chạy Máy Chủ
 
 ```bash
 php artisan serve
 ```
-###Bước 5: Cài Đặt npm và Xây Dựng Gói
+### Bước 5: Cài Đặt npm và Xây Dựng Gói
 
 ```bash
 npm install
