@@ -11,3 +11,18 @@ Step 4: Run server
 Step 5:  Install npm  Build package 
     npm install
     npm run dev
+
+    # Chuyên Đề Tốt Nghiệp
+
+## Cách Xây Dựng và Chạy Dự Án
+
+### Bước 1: Clone hoặc Tải Xuống Repository
+
+Clone repository hoặc tải xuống mã nguồn.
+
+### Bước 2: Cập Nhật Composer
+
+```bash
+cd fj_be/fj_be
+composer install
+composer update
