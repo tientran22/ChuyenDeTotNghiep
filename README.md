@@ -11,7 +11,7 @@ Clone repository hoặc tải xuống mã nguồn.
 cd fj_be/fj_be
 composer install
 composer update
-
+```
 
 ###Bước 3: Tạo Khóa Dự Án
 
@@ -19,14 +19,15 @@ composer update
 
 ```bash
 php artisan key:generate
-
+```
 ###Bước 4: Chạy Máy Chủ
 
 ```bash
 php artisan serve
-
+```
 ###Bước 5: Cài Đặt npm và Xây Dựng Gói
 
 ```bash
 npm install
 npm run dev
+```
