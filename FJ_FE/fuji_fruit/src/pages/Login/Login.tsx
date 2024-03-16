@@ -67,9 +67,16 @@ export default function Login() {
   console.log(errors)
 
   return (
-    <div className='bg-primary'>
+    <div className='bg-gradient-to-b from-green-600 to-blue-800'>
       <div className='container'>
         <div className='grid grid-cols-1 py-10 lg:grid-cols-5 lg:py-32 lg:pr-10'>
+          <div className='lg:col-span-2 text-white uppercase '>
+            <div className='text-5xl text-left mt-4 font-normal'>Chúng tôi</div>
+            <div className='text-9xl text-center mt-4 font-bold'>chỉ</div>
+            <div className='text-5xl text-center mt-4 font-normal'>bán hoa quả</div>
+            <div className='text-9xl text-right mt-4 font-bold'>sạch</div>
+          </div>
+
           <div className='lg:col-span-2 lg:col-start-4'>
             <form className='p-5 rounded bg-white shadow-sm' onSubmit={onSubmit} noValidate>
               <h3 className='text-sm lg:text-xl'>Đăng nhập</h3>
