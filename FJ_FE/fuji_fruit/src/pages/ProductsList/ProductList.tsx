@@ -15,6 +15,8 @@ import { Brand } from 'src/types/brand.type'
 import Product from './components/Product'
 import SortProductList from './components/SortProductList'
 import useQueryConfig from 'src/hooks/useQueryConfig'
+import Popup from 'src/components/Popup/Popup'
+import { useState } from 'react'
 export type queryConfig = {
   [key in keyof ProductListConfig]: string
 }
@@ -44,8 +46,20 @@ function ProductList() {
     }
   })
 
+  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
+
+  const openPopup = () => {
+    setIsPopupOpen(true)
+  }
+
+  const closePopup = () => {
+    setIsPopupOpen(false)
+  }
+
   return (
-    <div className='bg-gray-200 p-6'>
+    <div className='bg-white p-6'>
+      <button onClick={openPopup}>Hiển thị Popup</button>
+      <Popup message='Đây là nội dung của popup message.' isOpen={isPopupOpen} onClose={closePopup} />
       <div className='container'>
         {productsData && (
           <div className='grid grid-cols-12 gap-6'>

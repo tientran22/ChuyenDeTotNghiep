@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CartController;
+
 
 
 
@@ -40,6 +42,13 @@ Route::get('products/{id}', [ProductController::class, 'getProductDetail']);
 
 Route::get('/category', [CategoryController::class, 'getAllCategories']);
 Route::get('/brand', [BrandController::class, 'getAllBrands']);
+
+// Cart
+Route::post('/purchase/add-to-cart', [CartController::class, 'addToCart'])->middleware('auth:sanctum');
+Route::get('/purchase', [CartController::class, 'getPurchases'])->middleware('auth:sanctum');
+
+
+
 
 
 

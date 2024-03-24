@@ -1,19 +1,30 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { useQuery } from '@tanstack/react-query'
-import { useRef } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useRef, useState } from 'react'
 
 import { useParams } from 'react-router-dom'
 import productApi from 'src/apis/products.api'
-import InputNumber from 'src/components/InputNumber/InputNumber'
+
 import { Product as ProductType, ProductListConfig } from 'src/types/products.type'
 import { formatCurrency, getIdFromNameId, rateSale } from 'src/utils/utils'
 import Product from '../ProductsList/components/Product'
 
+import QuantityController from 'src/components/QuantityController'
+import purchaseApi from 'src/apis/purchase.api'
+import { purchaseStatus } from 'src/contains/purchase'
+import Popup from 'src/components/Popup/Popup'
+
 export default function ProductDetail() {
   // Xử lí url thân thiện
+
+  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
+  const [responseData, setResponseData] = useState<string>('') // Khởi tạo state để lưu trữ responseData
+  console.log(isPopupOpen)
+  const queryClient = useQueryClient()
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
-  //
+  const [buyCount, setBuyCount] = useState(1)
   const imageRef = useRef<HTMLImageElement>(null)
   const { data: productDetailData } = useQuery({
     queryKey: ['product', id],
@@ -21,10 +32,10 @@ export default function ProductDetail() {
   })
 
   const product = productDetailData?.data.product
-  console.log(productDetailData?.data)
+  // console.log(productDetailData?.data)
   const productSimilar = productDetailData?.data.similar_products
 
-  console.log(productSimilar)
+  // console.log(productSimilar)
 
   const queryConfig: ProductListConfig = { limit: 6, page: 1, category: product?.category }
   const { data: productsData } = useQuery({
@@ -33,7 +44,11 @@ export default function ProductDetail() {
       return productApi.getProducts(queryConfig)
     }
   })
-  console.log(productsData)
+
+  const addToCartMutation = useMutation({
+    mutationFn: (body: { product_id: string; buy_count: number }) => purchaseApi.addToCart(body)
+  })
+  // console.log(productsData)
   if (!product) return null
 
   const handleZoom = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -60,9 +75,42 @@ export default function ProductDetail() {
     imageRef.current?.removeAttribute('style')
   }
 
+  const handleBuyCount = (value: number) => {
+    setBuyCount(value)
+  }
+
+  const openPopup = () => {
+    setIsPopupOpen(true)
+  }
+
+  const closePopup = () => {
+    setIsPopupOpen(false)
+  }
+
+  const addToCart = (openPopup: () => void) => {
+    return () => {
+      addToCartMutation.mutate(
+        { buy_count: buyCount, product_id: product?.id as string },
+        {
+          onSuccess: (data) => {
+            const responseData = data.data.message
+            console.log(data.data.message)
+            // Mở popup khi thành công
+            // Cập nhật state với responseData
+            setResponseData(responseData)
+            openPopup()
+            // Làm mới truy vấn
+            queryClient.invalidateQueries({ queryKey: ['purchases', { status: purchaseStatus.inCart }] })
+          }
+        }
+      )
+    }
+  }
+
   return (
-    <div className='bg-gray-200 py-6'>
-      <div className='bg-white p-4 shadow'>
+    <div className=''>
+      <Popup message={responseData} isOpen={isPopupOpen} onClose={closePopup} />
+      <div className='bg-white p-6'>
         <div className='container'>
           <div className='grid grid-cols-12 gap-9'>
             <div className='col-span-5'>
@@ -130,45 +178,23 @@ export default function ProductDetail() {
                   </div>
                 )}
               </div>
-
               <div className='mt-8 flex items-center'>
-                <div className='capitalize text-gray-500'>số lượng</div>
-                <div className='ml-10 flex items-center'>
-                  <button className='flex w-8 h-8 items-center justify-center rounded-l-sm border border-gray-300 text-gray-600'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      className='w-4 h-4'
-                    >
-                      <path strokeLinecap='round' strokeLinejoin='round' d='M5 12h14' />
-                    </svg>
-                  </button>
-                  <InputNumber
-                    value={1}
-                    classNameError='hidden'
-                    classNameInput='h-8 w-14 border-y border-gray-300 p-1 text-center outline-none'
-                  />
-                  <button className='flex w-8 h-8 items-center justify-center rounded-l-sm border border-gray-300 text-gray-600'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      className='w-4 h-4'
-                    >
-                      <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
-                    </svg>
-                  </button>
-                </div>
-                <div className='ml-6 text-sm text-gray-600'>{product.quantity} sản phẩm có sẵn</div>
+                <div className='capitalize text-gray-500'>Số lượng</div>
+                <QuantityController
+                  onDecrease={handleBuyCount}
+                  onIncrease={handleBuyCount}
+                  onType={handleBuyCount}
+                  value={buyCount}
+                  max={product.quantity}
+                />
+                <div className='ml-6 text-sm text-gray-500'>{product.quantity} sản phẩm có sẵn</div>
               </div>
 
               <div className='mt-8 flex items-center'>
-                <button className='h-12 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-5 capitalize text-primary shadow-sm hover:bg-primary/5 gap-2'>
+                <button
+                  onClick={addToCart(openPopup)}
+                  className='h-12 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-5 capitalize text-primary shadow-sm hover:bg-primary/5 gap-2'
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -199,7 +225,15 @@ export default function ProductDetail() {
       </div>
       <div className='mt-8'>
         <div className='container'>
-          <div className='uppercase text-gray-400'>CÓ THỂ BẠN CŨNG THÍCH</div>
+          <div className='uppercase text-primary py-4 border-b border-gray-400'>Mô tả</div>
+          <p className='text-sm pt-4'>{product.description}</p>
+        </div>
+      </div>
+      <div className='mt-8'>
+        <div className='container'>
+          <div className='uppercase text-primary border-b py-2 border-gray-400 font-semibold'>
+            CÓ THỂ BẠN CŨNG THÍCH
+          </div>
           {productSimilar && (
             <div className='mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 xl:col-span-6'>
               {productSimilar.map((product: ProductType) => (
@@ -211,7 +245,6 @@ export default function ProductDetail() {
           )}
         </div>
       </div>
-      /
     </div>
   )
 }
