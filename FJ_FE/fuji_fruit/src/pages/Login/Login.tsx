@@ -5,6 +5,7 @@ import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import AuthApi from 'src/apis/auth.api'
+import AnimationText from 'src/components/AnimationText'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 import { path } from 'src/contains/path'
@@ -71,10 +72,15 @@ export default function Login() {
       <div className='container'>
         <div className='grid grid-cols-1 py-10 lg:grid-cols-5 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 text-white uppercase '>
-            <div className='text-5xl text-left mt-4 font-normal'>Chúng tôi</div>
-            <div className='text-9xl text-center mt-4 font-bold'>chỉ</div>
+            {/* <div className='text-5xl text-left mt-4 font-normal'>Chúng tôi</div> */}
+            <AnimationText text='Chúng tôi' className='text-5xl text-left mt-4 font-normal' startDelay={1} />
+            <AnimationText text='chỉ' className='text-9xl text-center mt-4 font-bold' startDelay={2} />
+            <AnimationText text='bán hoa quả' className='text-5xl text-center mt-4 font-normal' startDelay={3} />
+            <AnimationText text='sạch' className='text-9xl text-right mt-4 font-bold' startDelay={5} />
+
+            {/* <div className='text-9xl text-center mt-4 font-bold'>chỉ</div>
             <div className='text-5xl text-center mt-4 font-normal'>bán hoa quả</div>
-            <div className='text-9xl text-right mt-4 font-bold'>sạch</div>
+            <div className='text-9xl text-right mt-4 font-bold'>sạch</div> */}
           </div>
 
           <div className='lg:col-span-2 lg:col-start-4'>
@@ -99,7 +105,7 @@ export default function Login() {
               />
               <Button
                 type='submit'
-                className='w-full mt-2 p-3 uppercase text-white text-xs bg-primary hover:bg-secondary rounded-sm transition-all flex items-center justify-center'
+                className='w-full mt-2 p-3 uppercase text-white text-xs bg-primary hover:bg-primary/80 rounded-sm transition-all flex items-center justify-center'
                 disabled={loginAccountMutation.isPending}
                 isLoading={loginAccountMutation.isPending}
               >

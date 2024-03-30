@@ -36,7 +36,9 @@ export default function QuantityController({
     let _value = Number(value || localValue) + 1
     if (max !== undefined && _value > max) {
       _value = max
+      return
     }
+
     onIncrease && onIncrease(_value)
     setLocalValue(_value)
   }
@@ -45,6 +47,7 @@ export default function QuantityController({
     let _value = Number(value || localValue) - 1
     if (_value < 1) {
       _value = 1
+      return
     }
     onDecrease && onDecrease(_value)
     setLocalValue(_value)

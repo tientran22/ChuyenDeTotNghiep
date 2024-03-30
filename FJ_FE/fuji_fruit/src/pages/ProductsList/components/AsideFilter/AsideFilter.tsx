@@ -1,4 +1,4 @@
-import { Link, createSearchParams, useNavigate } from 'react-router-dom'
+import { Link, createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import Button from 'src/components/Button'
 
 import { path } from 'src/contains/path'
@@ -32,6 +32,7 @@ type FormData = NoUndefinedField<Pick<Schema, 'max_price' | 'min_price'>>
 const priceSchema = schema.pick(['min_price', 'max_price'])
 
 export default function AsideFilter({ queryConfig, categories, brands }: Props) {
+  const location = useLocation()
   const { category, brand } = queryConfig
   const [minPrice, setMinPrice] = useState<string>('') // State for min_price
   const [maxPrice, setMaxPrice] = useState<string>('') // State for max_price
@@ -52,7 +53,6 @@ export default function AsideFilter({ queryConfig, categories, brands }: Props) 
   const onSubmit = handleSubmit((data) => {
     console.log(data)
     navigate({
-      pathname: path.home,
       search: createSearchParams({
         ...queryConfig,
         min_price: data.min_price,
@@ -68,7 +68,6 @@ export default function AsideFilter({ queryConfig, categories, brands }: Props) 
 
   const handleRemoveAll = () => {
     navigate({
-      pathname: path.home,
       search: createSearchParams(omit(queryConfig, ['max_price', 'min_price', 'brand', 'category'])).toString()
     })
   }
@@ -76,7 +75,7 @@ export default function AsideFilter({ queryConfig, categories, brands }: Props) 
   return (
     <div className='py-4 font-semibold'>
       <Link
-        to={path.home}
+        to={location.pathname}
         className={classNames('flex items-center font-bold', {
           'text-primary': !category
         })}
@@ -105,7 +104,6 @@ export default function AsideFilter({ queryConfig, categories, brands }: Props) 
             <li className='py-2 pl-2' key={categoryItem.id}>
               <Link
                 to={{
-                  pathname: path.home,
                   search: createSearchParams({
                     ...queryConfig,
                     category: categoryItem.id
@@ -128,7 +126,7 @@ export default function AsideFilter({ queryConfig, categories, brands }: Props) 
       </ul>
 
       <Link
-        to={path.home}
+        to={location.pathname}
         className={classNames('flex items-center font-bold mt-6', {
           'text-primary': !brand
         })}
@@ -161,7 +159,6 @@ export default function AsideFilter({ queryConfig, categories, brands }: Props) 
               id='radio1'
               onClick={() =>
                 navigate({
-                  pathname: path.home,
                   search: createSearchParams({
                     ...queryConfig,
                     brand: brandItem.id
@@ -169,7 +166,7 @@ export default function AsideFilter({ queryConfig, categories, brands }: Props) 
                 })
               }
               name='radio'
-              className='w-6 h-6 mr-2 my-4 cursor-pointer'
+              className='w-6 h-6 mr-2 my-4 cursor-pointer accent-primary'
               checked={isActive}
               readOnly
             />

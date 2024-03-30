@@ -7,6 +7,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\BannerController;
+use App\Http\Controllers\HomeController;
 
 
 
@@ -46,9 +48,21 @@ Route::get('/brand', [BrandController::class, 'getAllBrands']);
 // Cart
 Route::post('/purchase/add-to-cart', [CartController::class, 'addToCart'])->middleware('auth:sanctum');
 Route::get('/purchase', [CartController::class, 'getPurchases'])->middleware('auth:sanctum');
+Route::put('/purchase/update-purchase', [CartController::class, 'updatePurchase'])->middleware('auth:sanctum');
+Route::delete('/purchase', [CartController::class, 'deletePurchases'])->middleware('auth:sanctum');
+Route::post('/purchase/buy-products', [CartController::class, 'buyProducts'])->middleware('auth:sanctum');
+// Banners
+Route::get('/banner', [BannerController::class, 'getAllBanners']);
+// Home
+Route::get('/home/getProductsImport', [HomeController::class, 'getProductsImport']);
+Route::get('/home/getProductsGift', [HomeController::class, 'getProductsGift']);
 
 
 
+
+
+
+ 
 
 
 

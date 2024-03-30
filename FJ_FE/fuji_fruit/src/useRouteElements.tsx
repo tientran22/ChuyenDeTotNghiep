@@ -12,6 +12,8 @@ import { AppContext } from './contexts/app.context'
 import { path } from './contains/path'
 import Admin from './pages/Admin'
 import ProductDetail from './pages/ProductDetail'
+import Cart from './pages/Cart'
+import Home from './pages/Home'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -38,6 +40,15 @@ function useRouteElements() {
       index: true,
       element: (
         <MainLayout>
+          <Home />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.products,
+      index: true,
+      element: (
+        <MainLayout>
           <ProductList />
         </MainLayout>
       )
@@ -60,6 +71,14 @@ function useRouteElements() {
           element: (
             <MainLayout>
               <Profile />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.cart,
+          element: (
+            <MainLayout>
+              <Cart />
             </MainLayout>
           )
         }

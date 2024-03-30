@@ -20,7 +20,6 @@ export default function ProductDetail() {
 
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
   const [responseData, setResponseData] = useState<string>('') // Khởi tạo state để lưu trữ responseData
-  console.log(isPopupOpen)
   const queryClient = useQueryClient()
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
@@ -32,6 +31,7 @@ export default function ProductDetail() {
   })
 
   const product = productDetailData?.data.product
+
   // console.log(productDetailData?.data)
   const productSimilar = productDetailData?.data.similar_products
 

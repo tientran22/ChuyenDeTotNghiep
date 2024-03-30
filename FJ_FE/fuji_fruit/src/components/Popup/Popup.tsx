@@ -16,7 +16,7 @@ const Popup: React.FC<PopupMessageProps> = ({ message, isOpen, onClose }) => {
   }, [isOpen, onClose])
 
   return (
-    <div className={`fixed inset-0 flex items-center justify-center z-10 ${isOpen ? 'visible' : 'hidden'}`}>
+    <div className={`fixed inset-0 flex items-center justify-center z-20 ${isOpen ? 'visible' : 'hidden'}`}>
       {/* Overlay background */}
       <button className='fixed inset-0 bg-gray-900 opacity-50' onClick={onClose}></button>
 
