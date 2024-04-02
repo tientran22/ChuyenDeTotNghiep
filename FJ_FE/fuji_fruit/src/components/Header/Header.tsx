@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext } from 'react'
 import { Link, createSearchParams, useNavigate } from 'react-router-dom'
-import Popover from '../Popover'
+
 import { AppContext } from 'src/contexts/app.context'
 import { useQuery } from '@tanstack/react-query'
 import { path } from 'src/contains/path'
@@ -10,13 +10,12 @@ import { useForm } from 'react-hook-form'
 import { omit } from 'lodash'
 import { purchaseStatus } from 'src/contains/purchase'
 import purchaseApi from 'src/apis/purchase.api'
-import { formatCurrency } from 'src/utils/utils'
+
 import NavHeader from '../NavHeader'
 
 export default function Header() {
   const queryConfig = useQueryConfig()
 
-  const MAX_PRODUCT = 5
   const { handleSubmit, register } = useForm({
     defaultValues: {
       name: ''
@@ -25,17 +24,8 @@ export default function Header() {
 
   const navigate = useNavigate()
   // console.log(queryConfig)
-  const { isAuthenticated } = useContext(AppContext)
+
   // console.log(isAuthenticated)
-
-  const { data: purchasesInCartData } = useQuery({
-    queryKey: ['purchases', { status: purchaseStatus.inCart }],
-    queryFn: () => purchaseApi.getPurchases({ status: purchaseStatus.inCart }),
-    enabled: isAuthenticated
-  })
-
-  const purchasesInCart = purchasesInCartData?.data.data
-  console.log(purchasesInCart)
 
   const onSubmitSearch = handleSubmit((data) => {
     console.log(data)
@@ -90,79 +80,28 @@ export default function Header() {
               </div>
             </form>
 
-            <Popover
-              className='bg-white border-2 max-w-[500px] border-green-700 rounded-full p-3 hover:bg-primary hover:text-white transition-all '
-              renderPopover={
-                <div className='relative rounded-sm border border-gray-200 bg-white shadow-md text-sm p-2 '>
-                  {purchasesInCart && purchasesInCart.length > 0 ? (
-                    <div className='p-2'>
-                      <div className='capitalize text-gray-400 mb-2'>Sản phẩm mới thêm</div>
-                      {purchasesInCart.slice(0, MAX_PRODUCT).map((purchase) => (
-                        <div className='mt-3 hover:bg-slate-100' key={purchase.id}>
-                          <div className='flex items-center p-1 cursor-pointer'>
-                            <img
-                              src={`./src/assets/images/products/${purchase.product.image}`}
-                              alt={purchase.product.name}
-                              className='w-8 h-8 object-cover flex-shrink-0'
-                            />
-                            <div className='truncate mx-2 flex-grow'>{purchase.product.name}</div>
-                            <span className='text-primary'>₫{formatCurrency(purchase.product.price)}</span>
-                          </div>
-                        </div>
-                      ))}
-                      <div className='flex items-center justify-between gap-2 mt-2'>
-                        <div>
-                          <span className='text-primary mr-1'>
-                            {purchasesInCart.length > MAX_PRODUCT ? purchasesInCart.length - MAX_PRODUCT : ''}
-                          </span>
-                          <span className='text-gray-700'>Thêm vào giỏ hàng </span>
-                        </div>
-
-                        <Link
-                          to={path.cart}
-                          className='rounded-sm outline-none border-none px-3 py-2 bg-primary text-white hover:opacity-90'
-                        >
-                          Xem giỏ hàng
-                        </Link>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className='p-2 min-h-[250px] min-w-[250px] relative flex items-center justify-center flex-col'>
-                      <img src='./src/assets/empty-cart.png' alt='' className='w-20 h-20 object-cover' />
-                      <div className='text-sm'>Chưa có sản phẩm</div>
-                      <Link
-                        className='absolute bottom-0 right-0 underline text-primary hover:text-primary/80 transition ease-in duration-300'
-                        to={path.home}
-                      >
-                        Xem sản phẩm
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              }
-            >
-              <Link to='/cart' className='relative'>
+            <div className='flex items-center gap-2'>
+              <div className='bg-primary rounded-full text-white p-3 cursor-pointer'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
                   viewBox='0 0 24 24'
                   strokeWidth={1.5}
                   stroke='currentColor'
-                  className='w-6 h-6 fill-primary'
+                  className='w-6 h-6'
                 >
                   <path
                     strokeLinecap='round'
                     strokeLinejoin='round'
-                    d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
+                    d='M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z'
                   />
                 </svg>
-                {purchasesInCart && (
-                  <span className='absolute flex items-center justify-center top-[-10px] right-[-6px] rounded-full bg-red-400 text-white px-[4px] py-[1px] text-xs'>
-                    {purchasesInCart?.length}
-                  </span>
-                )}
-              </Link>
-            </Popover>
+              </div>
+              <div className='text-primary'>
+                <p className='mb-2'>Hoa quả sạch Fuji</p>
+                <span className='text-xl'>1900 2268</span>
+              </div>
+            </div>
           </div>
         </div>
       </header>

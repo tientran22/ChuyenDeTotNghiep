@@ -9,6 +9,9 @@ const productHomeApi = {
   },
   getProductsImport() {
     return http.get<SuccessResponse<Product>>('/api/home/getProductsImport')
+  },
+  getProductsBestSeller() {
+    return http.get<SuccessResponse<Product>>('/api/home/getProductsBestSeller')
   }
 }
 export default productHomeApi

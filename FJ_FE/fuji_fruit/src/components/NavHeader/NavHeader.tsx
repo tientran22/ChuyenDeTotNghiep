@@ -102,9 +102,9 @@ export default function NavHeader() {
         </Popover>
         {isAuthenticated && (
           <Popover
-            className='flex items-center hover:opacity-70 transition-all cursor-pointer ml-10'
+            className='flex items-center hover:opacity-70 transition-all cursor-pointer ml-10 '
             renderPopover={
-              <div className='relative rounded-sm border border-gray-200 bg-white shadow-md'>
+              <div className='relative rounded-sm border border-gray-200 bg-white shadow-md '>
                 <Link
                   to={path.profile}
                   className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-primary'

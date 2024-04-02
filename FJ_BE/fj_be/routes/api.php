@@ -56,6 +56,8 @@ Route::get('/banner', [BannerController::class, 'getAllBanners']);
 // Home
 Route::get('/home/getProductsImport', [HomeController::class, 'getProductsImport']);
 Route::get('/home/getProductsGift', [HomeController::class, 'getProductsGift']);
+Route::get('/home/getProductsBestSeller', [HomeController::class, 'getProductsBestSeller']);
+
 
 
 

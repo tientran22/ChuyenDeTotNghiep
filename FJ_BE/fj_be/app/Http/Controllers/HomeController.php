@@ -26,5 +26,14 @@ class HomeController extends Controller
             'data' => $products
         ]);
     }
+
+    public function getProductsBestSeller() 
+    {
+        $products = Product::orderBy('sold', 'desc')->take(6)->get();
+        return response()->json([
+            'message' => 'Lấy sản phẩm best seller thành công',
+            'data' => $products
+        ]);
+    }
 }
 

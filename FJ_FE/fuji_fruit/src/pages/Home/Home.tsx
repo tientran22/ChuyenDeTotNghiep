@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import productHomeApi from 'src/apis/home.api'
 import purchaseApi from 'src/apis/purchase.api'
 import AnimationText from 'src/components/AnimationText'
@@ -10,17 +10,54 @@ import Popup from 'src/components/Popup/Popup'
 import { path } from 'src/contains/path'
 import { purchaseStatus } from 'src/contains/purchase'
 import { Product } from 'src/types/products.type'
-// import { path } from 'src/contains/path'
 import { formatCurrency, generateNameId } from 'src/utils/utils'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
+import categoryApi from 'src/apis/categories.api'
+import Navbar from 'src/components/Navbar/Navbar'
+
+const CommentsData = [
+  {
+    id: 1,
+    name: 'Linh Nguyen',
+    text: 'Trước tình trạng hoa quả nhập khẩu không rõ nguồn gốc tràn lan trên thị trường hiện nay, lựa chọn một nơi an tâm về trái cây có đầy đủ giấy tờ xuất xứ, mình xin phép chọn Hoa quả sạch FUJI nhé!',
+    img: '/src/assets/avatar.png'
+  },
+  {
+    id: 2,
+    name: 'Tuan Tran',
+    text: 'Có lần, tôi muốn đặt giỏ quà tặng sinh nhật đối tác, nhân viên đã gọi điện tư vấn rất nhiệt tình, trang trí rất đẹp và sáng tạo, tôi rất ưng ý vã sẽ thường xuyên mua hàng tại Hệ thồng Hoa quả sạch FUJI.',
+    img: '/src/assets/avatar.png'
+  },
+  {
+    id: 3,
+    name: 'Lan Dang',
+    text: 'Hoa quả sạch FUJI luôn tươi ngon với đầy đủ giấy tờ chứng minh nguồn gốc rõ ràng nên tôi rất yên tâm lựa chọn cho gia đình cũng như tặng người thân, bạn bè!',
+    img: '/src/assets/avatar.png'
+  },
+  {
+    id: 4,
+    name: 'Khun Dang',
+    text: 'Tôi rất hài lòng với chất lượng của hoa quả sạch mà tôi đã mua từ cửa hàng của bạn. Cảm giác khi ăn chúng thực sự khác biệt, vị ngọt tự nhiên và sự tươi mới thật sự làm hài lòng. Tôi sẽ quay lại mua thêm!',
+    img: '/src/assets/avatar.png'
+  },
+  {
+    id: 5,
+    name: 'Son Nguyen',
+    text: 'Tôi thực sự đánh giá cao việc bạn cam kết cung cấp các loại hoa quả không chứa hóa chất và thuốc trừ sâu. Điều này giúp tôi yên tâm hơn khi cho con cái ăn và đảm bảo rằng chúng có một chế độ dinh dưỡng tốt',
+    img: '/src/assets/avatar.png'
+  }
+]
 
 export default function Home() {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
   const [responseData, setResponseData] = useState<string>('') // Khởi tạo state để lưu trữ responseData
+  const [visibleProducts, setVisibleProducts] = useState(5) // Số lượng sản phẩm được hiển thị ban đầu
+
   const queryClient = useQueryClient()
   const [buyCount, setBuyCount] = useState(1)
+  const navigate = useNavigate()
 
   const { data: productsImportData } = useQuery({
     queryKey: ['productsImport'],
@@ -35,12 +72,26 @@ export default function Home() {
       return productHomeApi.getProductsGift()
     }
   })
-  console.log(productsGiftData)
+
+  const { data: productsBestSellerData } = useQuery({
+    queryKey: ['productsBestSeller'],
+    queryFn: () => {
+      return productHomeApi.getProductsBestSeller()
+    }
+  })
+  console.log(productsBestSellerData)
 
   const addToCartMutation = useMutation({
     mutationFn: (body: { product_id: string; buy_count: number }) => purchaseApi.addToCart(body)
   })
-
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => {
+      return categoryApi.getCategories()
+    }
+  })
+  const category = categoriesData?.data.data
+  if (!category) return null
   const product = productsImportData?.data.data
   if (!product) return null
 
@@ -71,6 +122,22 @@ export default function Home() {
         }
       )
     }
+
+  const handleLoadMore = () => {
+    // Tăng số lượng sản phẩm được hiển thị lên mỗi lần nhấn nút "Xem thêm"
+    setVisibleProducts((prevVisibleProducts) => prevVisibleProducts + 5)
+  }
+
+  const productsGift = '1'
+
+  const handleSeeAll = () => {
+    navigate({
+      pathname: path.products,
+      search: createSearchParams({
+        category: productsGift
+      }).toString()
+    })
+  }
 
   const settings = {
     dots: true,
@@ -114,7 +181,7 @@ export default function Home() {
     <div className='bg-white p-6'>
       <Popup message={responseData} isOpen={isPopupOpen} onClose={closePopup} />
 
-      <div className='container'>
+      <div className='container relative'>
         <Banner autoSlide={true} autoSlideInterval={3000}></Banner>
         <div className='py-6'>
           <div className='flex items-center justify-center w-full relative gap-2'>
@@ -127,7 +194,7 @@ export default function Home() {
           </div>
           <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 mt-6 gap-4'>
             {Array.isArray(productsImportData?.data.data) &&
-              productsImportData?.data.data.map((product: Product) => (
+              productsImportData?.data.data.slice(0, visibleProducts).map((product: Product) => (
                 <Link to={`${path.home}${generateNameId({ name: product.name, id: product.id })}`} key={product.id}>
                   <div className='bg-white relative text-center  rounded-md hover:translate-y-2 hover:shadow-md duration-150 transition-transform overflow-hidden'>
                     <div className='w-full pt-[100%] relative'>
@@ -212,19 +279,57 @@ export default function Home() {
                 </Link>
               ))}
           </div>
+          <div className='flex items-center justify-center mt-4'>
+            <button
+              onClick={handleLoadMore}
+              className='px-4 py-2 bg-none border border-primary text-primary hover:text-white hover:bg-primary/80 rounded-sm '
+            >
+              Xem thêm
+            </button>
+          </div>
         </div>
-        <div className='flex items-center justify-center'>
-          <button className='px-4 py-2 bg-none border border-primary text-primary hover:text-white hover:bg-primary/80 rounded-sm '>
-            Xem thêm
-          </button>
+
+        <div className='py-6'>
+          <div className='flex items-center justify-between text-xl font-semibold'>
+            <div className='flex'>
+              Sản phẩm <AnimationText text=' Best Seller ' className='text-primary'></AnimationText>của Fuji Fruit
+            </div>
+          </div>
         </div>
+
+        <div className='py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+          {Array.isArray(productsBestSellerData?.data.data) &&
+            productsBestSellerData.data.data.map((product: Product) => (
+              <Link to={`${path.home}${generateNameId({ name: product.name, id: product.id })}`} key={product.id}>
+                <div className='flex bg-slate-100 rounded-md overflow-hidden'>
+                  <div className=''>
+                    <img
+                      src={`/src/assets/images/products/${product.image}`}
+                      alt={product.name}
+                      className='w-[192px] h-[192px] object-cover flex-shrink-0'
+                    />
+                  </div>
+                  <div className='p-6'>
+                    <div className=' text-primary text-xl min-h-[3rem]'>{product.name}</div>
+                    <button className=' mt-2 mx-auto px-4 py-2 bg-amber-300 text-white border-none outline-none rounded-full hover:bg-primary/80 '>
+                      Mua ngay
+                    </button>
+                  </div>
+                </div>
+              </Link>
+            ))}
+        </div>
+
         <div className='py-6'>
           <div className='flex items-center justify-between text-xl font-semibold'>
             <div className='flex'>
               Sản phẩm <AnimationText text=' Giỏ quà ' className='text-primary'></AnimationText>của Fuji Fruit
             </div>
 
-            <button className='flex items-center gap-2 px-4 py-2 bg-primary border-none outline-none text-white hover:bg-primary/90 rounded-sm '>
+            <button
+              onClick={handleSeeAll}
+              className='flex items-center gap-2 px-4 py-2 bg-primary border-none outline-none text-white hover:bg-primary/90 rounded-sm '
+            >
               Xem ngay
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -239,12 +344,12 @@ export default function Home() {
             </button>
           </div>
 
-          <div className='py-6'>
+          <div className='py-6 '>
             <Slider {...settings}>
               {Array.isArray(productsGiftData?.data.data) &&
                 productsGiftData.data.data.map((product: Product) => (
                   <Link to={`${path.home}${generateNameId({ name: product.name, id: product.id })}`} key={product.id}>
-                    <div className='bg-white relative text-center  rounded-md hover:translate-y-2 hover:shadow-md duration-150 transition-transform overflow-hidden  mx-3'>
+                    <div className='bg-white relative text-center  rounded-md hover:translate-y-2 hover:shadow-md duration-150 transition-transform overflow-hidden  mx-3 mb-4'>
                       <div className='w-full pt-[100%] relative'>
                         <img
                           src={`/src/assets/images/products/${product.image}`}
@@ -295,6 +400,123 @@ export default function Home() {
                 ))}
             </Slider>
           </div>
+        </div>
+
+        <div className='mt-12 bg-neutral-100 p-4'>
+          <div className='grid grid-cols-12'>
+            <div className='col-span-6'>
+              <img src='/src/assets/images/about.png' alt='' />
+            </div>
+            <div className='col-span-6'>
+              <div className='text-primary uppercase'>Khát vọng vươn lên</div>
+              <div className='mt-4 text-6xl font-semibold'>
+                Niềm tự hào về <AnimationText text=' Chất lượng ' className='text-primary'></AnimationText> của fuji
+                Fruit
+              </div>
+              <p className='mt-4 leading-6'>
+                Chúng tôi luôn mong muốn và đã tạo ra nhiều giá trị về sức khỏe và niềm vui cho người dùng Việt. Điều đó
+                thật hạnh phúc khi thật vinh dự vì khách hàng đã tin tưởng vào dịch vụ và sản phẩm của Fuji Fruit. Khách
+                hàng và động lực lớn nhất để chúng tôi phát triển và lớn hơn từng ngày.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className='mt-12'>
+          <div className='grid grid-cols-12 gap-20'>
+            <div className='col-span-7'>
+              <div className='text-4xl font-semibold flex'>
+                Tại sao bạn <AnimationText text=' Lựa chọn ' className='text-primary'></AnimationText> chúng tôi
+              </div>
+              <p className='mt-2 leading-6 '>
+                Hoa quả sạch Fuji với đa dạng các trái cây nhập khẩu đến từ các nền nông nghiệp tiên tiến, hiện đại bậc
+                nhất thế giới: Nhật Bản, Hoa Kỳ, Hàn Quốc, Canada, Autralia,… đem đến dinh dưỡng và những sự lựa phong
+                phú người dùng
+              </p>
+              <div className='mt-4 font-semibold'>
+                <div className='flex items-center gap-2 mt-6'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='w-5 h-5 text-primary'
+                  >
+                    <path strokeLinecap='round' strokeLinejoin='round' d='m8.25 4.5 7.5 7.5-7.5 7.5' />
+                  </svg>
+                  Tận tâm với khách hàng và người tiêu dùng
+                </div>
+                <div className='flex items-center gap-2 mt-6'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='w-5 h-5 text-primary'
+                  >
+                    <path strokeLinecap='round' strokeLinejoin='round' d='m8.25 4.5 7.5 7.5-7.5 7.5' />
+                  </svg>
+                  Hệ thống 48 cửa hàng Fuji trên toàn quốc
+                </div>
+                <div className='flex items-center gap-2 mt-6'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='w-5 h-5 text-primary'
+                  >
+                    <path strokeLinecap='round' strokeLinejoin='round' d='m8.25 4.5 7.5 7.5-7.5 7.5' />
+                  </svg>
+                  Quy trình sản phẩm khắt khe chuẩn mực hàng đầu
+                </div>
+                <div className='flex items-center gap-2 mt-6'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='w-5 h-5 text-primary'
+                  >
+                    <path strokeLinecap='round' strokeLinejoin='round' d='m8.25 4.5 7.5 7.5-7.5 7.5' />
+                  </svg>
+                  Công nghệ bảo quản lạnh CAS hiện đại tân tiến
+                </div>
+              </div>
+            </div>
+            <div className='col-span-5'>
+              <div>
+                <img src='/src/assets/images/why.png' alt='' className='w-[360px] h-[360px] rounded-3xl' />
+              </div>
+            </div>
+          </div>
+          <div className='mt-4 text-4xl text-center text-primary font-semibold'>FeedBack từ khách hàng</div>
+          <Slider {...settings}>
+            {CommentsData.map((data) => (
+              <div className='my-6' key={data.id}>
+                <div className='flex flex-col gap-4 shadow-lg py-8 px-6 mx-4 rounded-xl dark:bg-gray-800 bg-primary/10 relative'>
+                  <div className='mb-4'>
+                    <img src={data.img} alt='' className='rounded-full w-20 h-20' />
+                  </div>
+                  <div className='flex flex-col items-center gap-4'>
+                    <div className='space-y-3'>
+                      <p className='text-sm min-h-[8rem] text-gray-500'>{data.text}</p>
+                      <h1 className='text-xl font-bold text-black/80 dark:text-light'>{data.name}</h1>
+                    </div>
+                  </div>
+                  <p className='text-black/20 text-9xl font-serif absolute top-0 right-0'>,,</p>
+                </div>
+              </div>
+            ))}
+          </Slider>
+        </div>
+
+        <div className='mt-12'>
+          <img src='/src/assets/images/hero.png' alt='' className='w-full h-full object-cover rounded-2xl' />
         </div>
       </div>
     </div>
