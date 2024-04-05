@@ -78,7 +78,7 @@ export default function Pagination({ queryConfig, pageSize }: Props) {
         return (
           <Link
             to={{
-              pathname: path.home,
+              pathname: location.pathname,
               search: createSearchParams({
                 ...queryConfig,
                 page: pageNumber.toString()
@@ -105,7 +105,7 @@ export default function Pagination({ queryConfig, pageSize }: Props) {
       ) : (
         <Link
           to={{
-            pathname: path.home,
+            pathname: location.pathname,
             search: createSearchParams({
               ...queryConfig,
               page: (page - 1).toString()
@@ -122,7 +122,7 @@ export default function Pagination({ queryConfig, pageSize }: Props) {
       ) : (
         <Link
           to={{
-            pathname: path.home,
+            pathname: location.pathname,
             search: createSearchParams({
               ...queryConfig,
               page: (page + 1).toString()

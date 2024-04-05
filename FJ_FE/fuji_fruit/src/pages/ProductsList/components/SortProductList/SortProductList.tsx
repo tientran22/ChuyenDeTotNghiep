@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { queryConfig } from '../../ProductList'
-import { Link, createSearchParams, useNavigate } from 'react-router-dom'
+import { Link, createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import { path } from 'src/contains/path'
 import { order as orderContains, sortBy } from 'src/contains/products'
 import { ProductListConfig } from 'src/types/products.type'
@@ -12,6 +12,8 @@ interface Props {
 }
 export default function SortProductList({ queryConfig, pageSize }: Props) {
   const page = Number(queryConfig.page)
+  const location = useLocation()
+
   const { sort_by = sortBy.view, order } = queryConfig
   const navigate = useNavigate()
   const isActiveSortBy = (sortByValue: Exclude<ProductListConfig['sort_by'], undefined>) => {
@@ -20,7 +22,7 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
 
   const handleSort = (sortByValue: Exclude<ProductListConfig['sort_by'], undefined>) => {
     navigate({
-      pathname: path.home,
+      pathname: location.pathname,
       search: createSearchParams(
         omit(
           {
@@ -35,7 +37,7 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
 
   const handlePriceOrder = (orderValue: Exclude<ProductListConfig['order'], undefined>) => {
     navigate({
-      pathname: path.home,
+      pathname: location.pathname,
       search: createSearchParams({
         ...queryConfig,
         sort_by: sortBy.price,
@@ -120,7 +122,7 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
               <Link
                 className='h-8 px-3 rounded-tl-sm rounded-bl-sm bg-white/60 hover:bg-primary hover:text-white flex items-center'
                 to={{
-                  pathname: path.home,
+                  pathname: location.pathname,
                   search: createSearchParams({
                     ...queryConfig,
                     page: (page - 1).toString()
@@ -156,7 +158,7 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
               <Link
                 className='h-8 px-3 rounded-tl-sm rounded-bl-sm bg-white cursor-pointer flex items-center hover:bg-primary hover:text-white'
                 to={{
-                  pathname: path.home,
+                  pathname: location.pathname,
                   search: createSearchParams({
                     ...queryConfig,
                     page: (page + 1).toString()

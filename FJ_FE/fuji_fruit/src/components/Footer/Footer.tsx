@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className='py-16 bg-neutral-100'>
       <div className='container'>
         <div className='flex items-center gap-10 flex-col lg:flex-row'>
-          <img src='./src/assets/logo.svg' alt='' className='w-1/3 h-10' />
+          <img src='/src/assets/logo.svg' alt='' className='w-1/3 h-10' />
 
           <div className='flex items-center flex-col gap-5   lg:flex-row w-2/3'>
             <input

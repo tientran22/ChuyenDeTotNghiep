@@ -11,11 +11,11 @@ interface Props {
 
 export default function Product({ product }: Props) {
   return (
-    <Link to={`${path.home}${generateNameId({ name: product.name, id: product.id })}`}>
+    <Link to={`${path.products}/${generateNameId({ name: product.name, id: product.id })}`}>
       <div className='bg-white relative shadow rounded-md hover:translate-y-2 hover:shadow-md duration-150 transition-transform overflow-hidden'>
         <div className='w-full pt-[100%] relative'>
           <img
-            src={`./src/assets/images/products/${product.image}`}
+            src={`/src/assets/images/products/${product.image}`}
             alt={product.name}
             className='absolute w-full h-full top-0 left-0'
           />
@@ -35,9 +35,13 @@ export default function Product({ product }: Props) {
           </span>
         </div>
 
-        <div className='px-1 py-2 text-xs bg-primary absolute top-0 rounded-sm right-0 text-white'>
-          {product.quantity === 0 ? 'Hết hàng' : ''}
-        </div>
+        {product.quantity === 0 ? (
+          <div className='px-1 py-2 text-xs bg-primary absolute top-0 rounded-sm right-0 text-white'>
+            {product.quantity === 0 ? 'Hết hàng' : ''}
+          </div>
+        ) : (
+          ''
+        )}
         <div className='mt-2 flex items-center px-2 pb-2 justify-between'>
           <div className='flex items-center'>
             {Array(5)

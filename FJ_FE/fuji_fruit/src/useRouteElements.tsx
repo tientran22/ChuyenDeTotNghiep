@@ -14,6 +14,9 @@ import Admin from './pages/Admin'
 import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
 import Home from './pages/Home'
+import Blog from './pages/Blog'
+import Contact from './pages/Contact/Contact'
+import BlogDetail from './pages/BlogDetail'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -62,6 +65,32 @@ function useRouteElements() {
         </MainLayout>
       )
     },
+
+    {
+      path: path.blog,
+      element: (
+        <MainLayout>
+          <Blog />
+        </MainLayout>
+      )
+    },
+
+    {
+      path: path.blogDetail,
+      element: (
+        <MainLayout>
+          <BlogDetail />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.contact,
+      element: (
+        <MainLayout>
+          <Contact />
+        </MainLayout>
+      )
+    },
     {
       path: '',
       element: <ProtectedRoute />,
@@ -98,7 +127,7 @@ function useRouteElements() {
           )
         },
         {
-          path: path.regiter,
+          path: path.register,
           element: (
             <RegisterLayout>
               <Register />

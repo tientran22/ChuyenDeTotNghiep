@@ -175,7 +175,7 @@ export default function AsideFilter({ queryConfig, categories, brands }: Props) 
         )
       })}
 
-      <Link to={path.home} className='mt-4 flex items-center font-bold uppercase'>
+      <Link to={path.home} className='mt-4 flex items-center font-bold'>
         <svg
           enableBackground='new 0 0 15 15'
           viewBox='0 0 15 15'

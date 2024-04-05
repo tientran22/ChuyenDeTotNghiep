@@ -8,8 +8,8 @@ const productApi = {
       params
     })
   },
-  getProductDetail(id: string) {
-    return http.get<Product>(`/api/products/${id}`)
+  getProductDetail(productId: string) {
+    return http.get<Product>(`/api/products/${productId}`)
   }
 }
 

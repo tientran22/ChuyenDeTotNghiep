@@ -3,32 +3,37 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRef, useState } from 'react'
 
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import productApi from 'src/apis/products.api'
 
 import { Product as ProductType, ProductListConfig } from 'src/types/products.type'
-import { formatCurrency, getIdFromNameId, rateSale } from 'src/utils/utils'
+import { formatCurrency, getIdFromProductId, rateSale } from 'src/utils/utils'
 import Product from '../ProductsList/components/Product'
 
 import QuantityController from 'src/components/QuantityController'
 import purchaseApi from 'src/apis/purchase.api'
 import { purchaseStatus } from 'src/contains/purchase'
 import Popup from 'src/components/Popup/Popup'
+import { path } from 'src/contains/path'
 
 export default function ProductDetail() {
-  // Xử lí url thân thiện
-
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
   const [responseData, setResponseData] = useState<string>('') // Khởi tạo state để lưu trữ responseData
   const queryClient = useQueryClient()
-  const { nameId } = useParams()
-  const id = getIdFromNameId(nameId as string)
+  // Xử lí url thân thiện
+  const { productId } = useParams()
+  const id = getIdFromProductId(productId as string) // Sử dụng getIdFromNameId() để lấy id từ nameId
+
   const [buyCount, setBuyCount] = useState(1)
   const imageRef = useRef<HTMLImageElement>(null)
+
+  // Sử dụng useQuery để lấy dữ liệu của sản phẩm
   const { data: productDetailData } = useQuery({
     queryKey: ['product', id],
     queryFn: () => productApi.getProductDetail(id as string)
   })
+
+  const navigate = useNavigate()
 
   const product = productDetailData?.data.product
 
@@ -38,16 +43,21 @@ export default function ProductDetail() {
   // console.log(productSimilar)
 
   const queryConfig: ProductListConfig = { limit: 6, page: 1, category: product?.category }
-  const { data: productsData } = useQuery({
-    queryKey: ['products', queryConfig],
-    queryFn: () => {
-      return productApi.getProducts(queryConfig)
-    }
-  })
 
   const addToCartMutation = useMutation({
     mutationFn: (body: { product_id: string; buy_count: number }) => purchaseApi.addToCart(body)
   })
+
+  const buyNow = async (productId: string) => {
+    // Thêm tham số productId
+    const res = await addToCartMutation.mutateAsync({ product_id: productId, buy_count: buyCount }) // Sử dụng productId
+    const purchase = res.data.data
+    navigate(path.cart, {
+      state: {
+        purchaseId: purchase.id
+      }
+    })
+  }
   // console.log(productsData)
   if (!product) return null
 
@@ -120,7 +130,7 @@ export default function ProductDetail() {
                 onMouseLeave={handleRemoveZoom}
               >
                 <img
-                  src={`./src/assets/images/products/${product.image}`}
+                  src={`/src/assets/images/products/${product.image}`}
                   alt={product.name}
                   className='absolute w-full h-full  top-0 left-0 bg-white pointer-events-none'
                   ref={imageRef}
@@ -193,7 +203,7 @@ export default function ProductDetail() {
               <div className='mt-8 flex items-center'>
                 <button
                   onClick={addToCart(openPopup)}
-                  className='h-12 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-5 capitalize text-primary shadow-sm hover:bg-primary/5 gap-2'
+                  className={`h-12 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-5 capitalize text-primary shadow-sm hover:bg-primary/5 gap-2 ${product.quantity === 0 ? 'cursor-not-allowed' : ''}`}
                 >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -213,12 +223,59 @@ export default function ProductDetail() {
                 </button>
 
                 <button
-                  // onClick={buyNow}
-                  className='fkex ml-4 h-12 min-w-[5rem] items-center justify-center rounded-sm bg-primary px-5 capitalize text-white shadow-sm outline-none hover:bg-primary/90'
+                  onClick={() => buyNow(product.id)}
+                  className={`flex ml-4 h-12 min-w-[5rem] items-center justify-center rounded-sm bg-primary px-5 capitalize text-white shadow-sm outline-none hover:bg-primary/90 ${product.quantity === 0 ? 'cursor-not-allowed' : ''}`}
                 >
                   Mua ngay
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className='mt-8'>
+        <div className='container'>
+          <div className='grid grid-cols-3 sm:grid-cols-6 gap-4'>
+            <div className='flex items-center p-4 border border-primary gap-2 rounded-lg'>
+              <div>
+                <img src='/src/assets/images/icons/hoaqua.png' alt='' className='w-full h-full object-cover' />
+              </div>
+              <span className='text-primary'>Hoa quả tươi sạch, an toàn</span>
+            </div>
+
+            <div className='flex items-center p-4 border border-primary gap-2 rounded-lg'>
+              <div>
+                <img src='/src/assets/images/icons/chatbaoquan.png' alt='' className='w-full h-full object-cover' />
+              </div>
+              <span className='text-primary'>Không chất bảo quản</span>
+            </div>
+
+            <div className='flex items-center p-4 border border-primary gap-2 rounded-lg'>
+              <div>
+                <img src='/src/assets/images/icons/dichvu.png' alt='' className='w-full h-full object-cover' />
+              </div>
+              <span className='text-primary'>Dịch vụ chuyên nghiệp đảm bảo</span>
+            </div>
+
+            <div className='flex items-center p-4 border border-primary gap-2 rounded-lg'>
+              <div>
+                <img src='/src/assets/images/icons/thuocbiengen.png' alt='' className='w-full h-full object-cover' />
+              </div>
+              <span className='text-primary'>Không thuốc biến đổi gene</span>
+            </div>
+
+            <div className='flex items-center p-4 border border-primary gap-2 rounded-lg'>
+              <div>
+                <img src='/src/assets/images/icons/hangTQ.png' alt='' className='w-full h-full object-cover' />
+              </div>
+              <span className='text-primary'>Nói với không hàng Trung Quốc</span>
+            </div>
+
+            <div className='flex items-center p-4 border border-primary gap-2 rounded-lg'>
+              <div>
+                <img src='/src/assets/images/icons/giaca.png' alt='' className='w-full h-full object-cover' />
+              </div>
+              <span className='text-primary'>Giá cả cạnh tranh tốt nhất</span>
             </div>
           </div>
         </div>

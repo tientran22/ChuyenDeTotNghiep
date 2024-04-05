@@ -90,6 +90,21 @@ export default function Home() {
       return categoryApi.getCategories()
     }
   })
+
+  const productsSeller = productsBestSellerData?.data.data
+  if (!productsSeller) return null
+
+  const buyNow = async (productId: string) => {
+    // Thêm tham số productId
+    const res = await addToCartMutation.mutateAsync({ product_id: productId, buy_count: buyCount }) // Sử dụng productId
+    const purchase = res.data.data
+    navigate(path.cart, {
+      state: {
+        purchaseId: purchase.id
+      }
+    })
+  }
+
   const category = categoriesData?.data.data
   if (!category) return null
   const product = productsImportData?.data.data
@@ -195,7 +210,10 @@ export default function Home() {
           <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 mt-6 gap-4'>
             {Array.isArray(productsImportData?.data.data) &&
               productsImportData?.data.data.slice(0, visibleProducts).map((product: Product) => (
-                <Link to={`${path.home}${generateNameId({ name: product.name, id: product.id })}`} key={product.id}>
+                <Link
+                  to={`${path.products}/${generateNameId({ name: product.name, id: product.id })}`}
+                  key={product.id}
+                >
                   <div className='bg-white relative text-center  rounded-md hover:translate-y-2 hover:shadow-md duration-150 transition-transform overflow-hidden'>
                     <div className='w-full pt-[100%] relative'>
                       <img
@@ -207,6 +225,13 @@ export default function Home() {
                     <div className='p-2 overflow-hidden'>
                       <div className='min-h-[2.5rem] line-clamp-2 font-semibold  text-primary'>{product.name}</div>
                     </div>
+                    {product.quantity === 0 ? (
+                      <div className='px-1 py-2 text-xs bg-primary absolute top-0 rounded-sm right-0 text-white'>
+                        {product.quantity === 0 ? 'Hết hàng' : ''}
+                      </div>
+                    ) : (
+                      ''
+                    )}
                     <div className='flex items-center mt-2 px-2 justify-center'>
                       <div className='text-primary mr-2'>
                         <span className='text-xs'>₫</span>
@@ -257,7 +282,7 @@ export default function Home() {
                       onClick={(e) => {
                         addToCart(openPopup, e)(product.id) // Gọi hàm addToCart khi nút được nhấn
                       }}
-                      className='h-8 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-2 text-sm mx-auto capitalize text-primary shadow-sm hover:bg-primary/5 gap-2'
+                      className={`h-8 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-2 text-sm mx-auto capitalize text-primary shadow-sm hover:bg-primary/5 gap-2 ${product.quantity === 0 ? 'cursor-not-allowed' : ''}`}
                     >
                       <svg
                         xmlns='http://www.w3.org/2000/svg'
@@ -300,23 +325,36 @@ export default function Home() {
         <div className='py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
           {Array.isArray(productsBestSellerData?.data.data) &&
             productsBestSellerData.data.data.map((product: Product) => (
-              <Link to={`${path.home}${generateNameId({ name: product.name, id: product.id })}`} key={product.id}>
-                <div className='flex bg-slate-100 rounded-md overflow-hidden'>
-                  <div className=''>
-                    <img
-                      src={`/src/assets/images/products/${product.image}`}
-                      alt={product.name}
-                      className='w-[192px] h-[192px] object-cover flex-shrink-0'
-                    />
+              <div className='flex bg-slate-100 rounded-md overflow-hidden relative ' key={product.id}>
+                <Link to={`${path.products}/${generateNameId({ name: product.name, id: product.id })}`} className=''>
+                  <img
+                    src={`/src/assets/images/products/${product.image}`}
+                    alt={product.name}
+                    className='w-[192px] h-[192px] object-cover flex-shrink-0'
+                  />
+                </Link>
+                {product.quantity === 0 ? (
+                  <div className='px-1 py-2 text-xs bg-primary absolute top-0 rounded-sm left-0 text-white'>
+                    {product.quantity === 0 ? 'Hết hàng' : ''}
                   </div>
-                  <div className='p-6'>
-                    <div className=' text-primary text-xl min-h-[3rem]'>{product.name}</div>
-                    <button className=' mt-2 mx-auto px-4 py-2 bg-amber-300 text-white border-none outline-none rounded-full hover:bg-primary/80 '>
-                      Mua ngay
-                    </button>
-                  </div>
+                ) : (
+                  ''
+                )}
+                <div className='p-6'>
+                  <Link
+                    to={`${path.products}/${generateNameId({ name: product.name, id: product.id })}`}
+                    className='block text-primary text-xl min-h-[3rem] cursor-pointer'
+                  >
+                    {product.name}
+                  </Link>
+                  <button
+                    onClick={() => buyNow(product.id)} // Thêm tham số product.id khi gọi hàm buyNow
+                    className=' mt-2 mx-auto px-4 py-2 bg-amber-300 text-white border-none outline-none rounded-full hover:bg-primary/80 '
+                  >
+                    Mua ngay
+                  </button>
                 </div>
-              </Link>
+              </div>
             ))}
         </div>
 
@@ -348,7 +386,10 @@ export default function Home() {
             <Slider {...settings}>
               {Array.isArray(productsGiftData?.data.data) &&
                 productsGiftData.data.data.map((product: Product) => (
-                  <Link to={`${path.home}${generateNameId({ name: product.name, id: product.id })}`} key={product.id}>
+                  <Link
+                    to={`${path.products}/${generateNameId({ name: product.name, id: product.id })}`}
+                    key={product.id}
+                  >
                     <div className='bg-white relative text-center  rounded-md hover:translate-y-2 hover:shadow-md duration-150 transition-transform overflow-hidden  mx-3 mb-4'>
                       <div className='w-full pt-[100%] relative'>
                         <img
@@ -360,7 +401,13 @@ export default function Home() {
                       <div className='p-2 overflow-hidden'>
                         <div className='line-clamp-2 font-semibold  text-primary'>{product.name}</div>
                       </div>
-
+                      {product.quantity === 0 ? (
+                        <div className='px-1 py-2 text-xs bg-primary absolute top-0 rounded-sm right-0 text-white'>
+                          {product.quantity === 0 ? 'Hết hàng' : ''}
+                        </div>
+                      ) : (
+                        ''
+                      )}
                       <div className='flex items-center mt-2 justify-center'>
                         {Array(5)
                           .fill(0)

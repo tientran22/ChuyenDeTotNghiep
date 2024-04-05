@@ -20,11 +20,9 @@ export default function Navbar() {
   })
 
   const purchasesInCart = purchasesInCartData?.data.data
-  console.log(purchasesInCart)
   useEffect(() => {
     function handleScroll() {
       const scrollTop = window.pageYOffset
-      console.log(scrollTop)
       setIsScrolled(scrollTop > 200)
     }
 
@@ -43,7 +41,7 @@ export default function Navbar() {
       })}
     >
       <div className='max-w-7xl mx-auto  grid grid-cols-12'>
-        <div className='col-span-3 '>
+        <div className='col-span-3  flex items-center justify-center'>
           <Popover
             className='flex items-center  cursor-pointer '
             renderPopover={
@@ -106,7 +104,7 @@ export default function Navbar() {
             }
           >
             <div className='px-2 py-2 bg-primary rounded-xl text-white w-full'>
-              <Link to='/' className='  font-bold uppercase flex items-center justify-center'>
+              <Link to='/products' className='font-bold uppercase flex items-center justify-center'>
                 <svg viewBox='0 0 12 10' className='mr-3 h-5 w-5 fill-current'>
                   <g fillRule='evenodd' stroke='none' strokeWidth={1}>
                     <g transform='translate(-373 -208)'>
@@ -147,10 +145,22 @@ export default function Navbar() {
             >
               Sản phẩm
             </Link>
-            <Link to='/blog' className='text-xl hover:text-primary transform transition-transform hover:scale-x-105'>
+            <Link
+              to={path.blog}
+              className={classNames(
+                'text-xl hover:text-primary transform transition-transform hover:scale-x-105',
+                { 'font-bold text-primary': location.pathname === path.blog } // Thêm lớp font-bold nếu liên kết là trang chủ
+              )}
+            >
               Tin tức
             </Link>
-            <Link to='/contact' className='text-xl hover:text-primary transform transition-transform hover:scale-x-105'>
+            <Link
+              to={path.contact}
+              className={classNames(
+                'text-xl hover:text-primary transform transition-transform hover:scale-x-105',
+                { 'font-bold text-primary': location.pathname === path.contact } // Thêm lớp font-bold nếu liên kết là trang chủ
+              )}
+            >
               Liên hệ
             </Link>
           </div>

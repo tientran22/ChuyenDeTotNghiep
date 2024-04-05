@@ -30,7 +30,7 @@ export default function Header() {
   const onSubmitSearch = handleSubmit((data) => {
     console.log(data)
     navigate({
-      pathname: path.home,
+      pathname: path.products,
       search: createSearchParams(
         omit(
           {

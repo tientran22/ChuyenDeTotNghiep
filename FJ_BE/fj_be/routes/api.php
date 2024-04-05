@@ -9,6 +9,8 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\BlogController;
+
 
 
 
@@ -36,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/products', [ProductController::class, 'getProducts']);
-Route::get('products/{id}', [ProductController::class, 'getProductDetail']);
+Route::get('products/{productId}', [ProductController::class, 'getProductDetail']);
 
 
 // Route::get('/products', [ProductController::class, 'searchProducts']);
@@ -57,6 +59,10 @@ Route::get('/banner', [BannerController::class, 'getAllBanners']);
 Route::get('/home/getProductsImport', [HomeController::class, 'getProductsImport']);
 Route::get('/home/getProductsGift', [HomeController::class, 'getProductsGift']);
 Route::get('/home/getProductsBestSeller', [HomeController::class, 'getProductsBestSeller']);
+// Blog
+Route::get('/blog', [BlogController::class, 'getAllBlog']);
+Route::get('/blog/{blogId}',[BlogController::class, 'getBlogDetail']);
+
 
 
 

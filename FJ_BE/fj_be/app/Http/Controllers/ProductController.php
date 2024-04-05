@@ -96,32 +96,31 @@ class ProductController extends Controller
         ]);
     }
 
-    public function getProductDetail($id)
-    {
-        // Lấy thông tin của sản phẩm cụ thể
-        $product = Product::find($id);
-    
-        // Kiểm tra xem sản phẩm có tồn tại không
-        if (!$product) {
-            return response()->json(['error' => 'Product not found.'], 404);
-        }
-    
-        // Lấy danh sách các category của sản phẩm
-        $categories = $product->category()->pluck('id');
-    
-        // Tìm các sản phẩm tương tự dựa trên category của sản phẩm hiện tại
-        $similarProducts = Product::whereHas('category', function($query) use ($categories) {
-            $query->whereIn('id', $categories);
-        })->where('id', '!=', $id)->take(6)->get();
-    
-        // Trả về thông tin chi tiết của sản phẩm cùng với danh sách các sản phẩm tương tự
-        return response()->json([
-            'message' => 'Product detail and similar products fetched successfully.',
-            'product' => $product,
-            'similar_products' => $similarProducts,
-        ], 200);
+    public function getProductDetail($productId)
+{
+    // Lấy thông tin của sản phẩm cụ thể
+    $product = Product::find($productId);
+
+    // Kiểm tra xem sản phẩm có tồn tại không
+    if (!$product) {
+        return response()->json(['error' => 'Sản phẩm không tồn tại.'], 404);
     }
 
+    // Lấy danh sách các danh mục của sản phẩm
+    $categories = $product->category()->pluck('id');
+
+    // Tìm các sản phẩm tương tự dựa trên danh mục của sản phẩm hiện tại
+    $similarProducts = Product::whereHas('category', function($query) use ($categories) {
+        $query->whereIn('id', $categories);
+    })->where('id', '!=', $productId)->take(6)->get();
+
+    // Trả về thông tin chi tiết của sản phẩm cùng với danh sách các sản phẩm tương tự
+    return response()->json([
+        'message' => 'Lấy thông tin chi tiết sản phẩm và các sản phẩm tương tự thành công.',
+        'product' => $product,
+        'similar_products' => $similarProducts,
+    ], 200);
+}
 
 }
 

@@ -27,7 +27,12 @@ export const generateNameId = ({ name, id }: { name: string; id: string }) => {
   return removeSpecialCharacter(name).replace(/\s/g, '-') + `-i-${id}`
 }
 
-export const getIdFromNameId = (nameId: string) => {
-  const arr = nameId.split('-i-')
+export const getIdFromProductId = (productId: string) => {
+  const arr = productId.split('-i-')
+  return arr[arr.length - 1]
+}
+
+export const getIdFromBlogId = (blogId: string) => {
+  const arr = blogId.split('-i-')
   return arr[arr.length - 1]
 }

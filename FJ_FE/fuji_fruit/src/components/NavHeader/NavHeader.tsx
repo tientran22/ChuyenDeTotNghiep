@@ -127,7 +127,7 @@ export default function NavHeader() {
             }
           >
             <div className='w-6 h-6 mr-2 flex-shrink-0'>
-              <img src='./src/assets/avatar.png' alt='' className='w-full h-full rounded-full object-cover' />
+              <img src='/src/assets/avatar.png' alt='' className='w-full h-full rounded-full object-cover' />
             </div>
             <div className=''>{profile?.name}</div>
           </Popover>
@@ -135,7 +135,7 @@ export default function NavHeader() {
 
         {!isAuthenticated && (
           <div className='flex items-center ml-5'>
-            <Link to={path.regiter} className='mx-3 capitalize hover:text-primary'>
+            <Link to={path.register} className='mx-3 capitalize hover:text-primary'>
               Đăng ký
             </Link>
             <div className='border-r-[1px] border-r-primary h-4 '></div>
