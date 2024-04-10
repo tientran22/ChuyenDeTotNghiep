@@ -17,6 +17,9 @@ import Home from './pages/Home'
 import Blog from './pages/Blog'
 import Contact from './pages/Contact/Contact'
 import BlogDetail from './pages/BlogDetail'
+import AdminLayout from './layouts/AdminLayout'
+import AdminProducts from './pages/AdminProducts'
+import Payment from './pages/Payment'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -28,16 +31,20 @@ function RejectedRoute() {
   return !isAuthenticated ? <Outlet /> : <Navigate to='/' />
 }
 
+function AdminRoute() {
+  const { isAuthenticated, profile } = useContext(AppContext)
+
+  // Kiểm tra nếu người dùng đã xác thực, là admin và không có vai trò là "user" thì cho phép truy cập trang admin,
+  // ngược lại chuyển hướng về trang chính
+  if (isAuthenticated && profile?.roles.includes('admin')) {
+    return <Outlet />
+  } else {
+    return <Navigate to='/' />
+  }
+}
+
 function useRouteElements() {
   const routeElements = useRoutes([
-    // {
-    //   path: path.admin,
-    //   element: (
-    //     <MainLayout>
-    //       <Admin />
-    //     </MainLayout>
-    //   )
-    // },
     {
       path: path.home,
       index: true,
@@ -110,6 +117,14 @@ function useRouteElements() {
               <Cart />
             </MainLayout>
           )
+        },
+        {
+          path: path.payment,
+          element: (
+            <MainLayout>
+              <Payment />
+            </MainLayout>
+          )
         }
       ]
     },
@@ -132,6 +147,29 @@ function useRouteElements() {
             <RegisterLayout>
               <Register />
             </RegisterLayout>
+          )
+        }
+      ]
+    },
+
+    {
+      path: '',
+      element: <AdminRoute />,
+      children: [
+        {
+          path: path.admin,
+          element: (
+            <AdminLayout>
+              <Admin />
+            </AdminLayout>
+          )
+        },
+        {
+          path: path.adminProduct,
+          element: (
+            <AdminLayout>
+              <AdminProducts />
+            </AdminLayout>
           )
         }
       ]

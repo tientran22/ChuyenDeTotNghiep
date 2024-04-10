@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import purchaseApi from 'src/apis/purchase.api'
 import Button from 'src/components/Button'
 import QuantityController from 'src/components/QuantityController'
@@ -26,6 +26,7 @@ export default function Cart() {
     queryKey: ['purchases', { status: purchaseStatus.inCart }],
     queryFn: () => purchaseApi.getPurchases({ status: purchaseStatus.inCart })
   })
+  const navigate = useNavigate()
 
   const updatePurchasesMutation = useMutation({
     mutationFn: purchaseApi.updatePurchase,
@@ -34,18 +35,18 @@ export default function Cart() {
     }
   })
 
-  const buyProductsMutation = useMutation({
-    mutationFn: purchaseApi.buyProducts,
-    onSuccess: (data) => {
-      const responseData = data.data.message
-      console.log(data.data.message)
-      // Mở popup khi thành công
-      // Cập nhật state với responseData
-      setResponseData(responseData)
-      openPopup()
-      refetch()
-    }
-  })
+  // const buyProductsMutation = useMutation({
+  //   mutationFn: purchaseApi.buyProducts,
+  //   onSuccess: (data) => {
+  //     const responseData = data.data.message
+  //     console.log(data.data.message)
+  //     // Mở popup khi thành công
+  //     // Cập nhật state với responseData
+  //     setResponseData(responseData)
+  //     openPopup()
+  //     refetch()
+  //   }
+  // })
 
   const openPopup = () => {
     setIsPopupOpen(true)
@@ -159,14 +160,15 @@ export default function Cart() {
     deletePurchasesMutation.mutate(purchaseIds)
   }
 
-  const handleBuyProducts = (openPopup: () => void) => () => {
-    if (checkedPurchases.length > 0) {
-      const body = checkedPurchases.map((purchase) => ({
-        product_id: purchase.product.id,
-        buy_count: purchase.buy_count
-      }))
-      buyProductsMutation.mutate(body)
-    }
+  const handleBuyProducts = () => {
+    navigate('/payment', {
+      state: {
+        checkedPurchases,
+        totalCheckedPurchasePrice,
+        totalCheckedPurchaseSavingPrice
+        // Truyền thêm các dữ liệu khác cần thiết tại đây
+      }
+    })
   }
 
   return (
@@ -334,7 +336,7 @@ export default function Cart() {
                   </div>
                 </div>
                 <Button
-                  onClick={handleBuyProducts(openPopup)}
+                  onClick={handleBuyProducts}
                   className='mt-5 sm:mt-0 sm:ml-4 h-10 w-48 uppercase text-white text-xs bg-primary hover:bg-primary/80 rounded-sm transition-all flex items-center justify-center'
                 >
                   Mua hàng

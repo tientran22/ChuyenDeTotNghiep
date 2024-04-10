@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import AuthApi from 'src/apis/auth.api'
 import AnimationText from 'src/components/AnimationText'
 import Button from 'src/components/Button'
@@ -19,6 +18,8 @@ const loginSchema = schema.pick(['email', 'password'])
 
 export default function Login() {
   const { setisAuthenticated, setProfile } = useContext(AppContext)
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
@@ -29,58 +30,49 @@ export default function Login() {
   })
 
   const loginAccountMutation = useMutation({
-    mutationFn: (body: Omit<FormData, 'confirm_password'>) => AuthApi.loginAccount(body)
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => AuthApi.loginAccount(body),
+    onSuccess: (data) => {
+      const userData = data.data.data.user // Lấy dữ liệu người dùng từ response
+      console.log(data)
+      setisAuthenticated(true)
+      setProfile(userData)
+
+      if (userData.roles.includes('admin')) {
+        navigate('/admin') // Điều hướng đến trang admin nếu người dùng có vai trò là admin
+      } else {
+        navigate('/') // Điều hướng đến trang chính nếu người dùng không phải là admin
+      }
+    },
+    onError: (error) => {
+      console.log(error)
+      if (isAxiosUnauthorizedError<ErrorResponse<FormData>>(error)) {
+        const formError = error.response?.data.data
+        console.log(formError)
+        if (formError) {
+          Object.keys(formError).forEach((key) => {
+            setError(key as keyof FormData, {
+              message: formError[key as keyof FormData],
+              type: 'Server'
+            })
+          })
+        }
+      }
+    }
   })
 
   const onSubmit = handleSubmit((data) => {
-    loginAccountMutation.mutate(data, {
-      onSuccess: (data) => {
-        console.log(data.data.data)
-        setisAuthenticated(true)
-        setProfile(data.data.data.user)
-      },
-      onError: (error) => {
-        console.log(error)
-        if (isAxiosUnauthorizedError<ErrorResponse<FormData>>(error)) {
-          const formError = error.response?.data.data
-          console.log(formError)
-          // if (formError?.email) {
-          //   setError('email', {
-          //     message: formError.email,
-          //     type: 'Server'
-          //   })
-          // }
-          if (formError) {
-            Object.keys(formError).forEach((key) => {
-              console.log(formError[key as keyof FormData])
-              setError(key as keyof FormData, {
-                message: formError[key as keyof FormData],
-                type: 'Server'
-              })
-            })
-          }
-        }
-      }
-    })
-    console.log(data)
+    loginAccountMutation.mutate(data)
   })
-
-  console.log(errors)
 
   return (
     <div className='bg-gradient-to-b from-green-600 to-blue-800'>
       <div className='container'>
         <div className='grid grid-cols-1 py-10 lg:grid-cols-5 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 text-white uppercase '>
-            {/* <div className='text-5xl text-left mt-4 font-normal'>Chúng tôi</div> */}
             <AnimationText text='Chúng tôi' className='text-5xl text-left mt-4 font-normal' startDelay={1} />
             <AnimationText text='chỉ' className='text-9xl text-center mt-4 font-bold' startDelay={2} />
             <AnimationText text='bán hoa quả' className='text-5xl text-center mt-4 font-normal' startDelay={3} />
             <AnimationText text='sạch' className='text-9xl text-right mt-4 font-bold' startDelay={5} />
-
-            {/* <div className='text-9xl text-center mt-4 font-bold'>chỉ</div>
-            <div className='text-5xl text-center mt-4 font-normal'>bán hoa quả</div>
-            <div className='text-9xl text-right mt-4 font-bold'>sạch</div> */}
           </div>
 
           <div className='lg:col-span-2 lg:col-start-4'>
@@ -114,7 +106,7 @@ export default function Login() {
 
               <div className='flex item-center justify-center mt-4 gap-2'>
                 <span className='text-gray-400'>Bạn chưa có tài khoản?</span>
-                <Link className='text-primary font-semibold hover:text-secondary cursor-pointer  ' to={path.regiter}>
+                <Link className='text-primary font-semibold hover:text-secondary cursor-pointer  ' to={path.register}>
                   Đăng ký
                 </Link>
               </div>

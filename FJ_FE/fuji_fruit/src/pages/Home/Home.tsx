@@ -282,7 +282,7 @@ export default function Home() {
                       onClick={(e) => {
                         addToCart(openPopup, e)(product.id) // Gọi hàm addToCart khi nút được nhấn
                       }}
-                      className={`h-8 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-2 text-sm mx-auto capitalize text-primary shadow-sm hover:bg-primary/5 gap-2 ${product.quantity === 0 ? 'cursor-not-allowed' : ''}`}
+                      className={`h-8 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-2 text-sm mx-auto capitalize text-primary shadow-sm hover:bg-primary/5 gap-2 ${product.quantity === 0 ? 'cursor-not-allowed hover:bg-primary/10' : ''}`}
                     >
                       <svg
                         xmlns='http://www.w3.org/2000/svg'
@@ -349,7 +349,7 @@ export default function Home() {
                   </Link>
                   <button
                     onClick={() => buyNow(product.id)} // Thêm tham số product.id khi gọi hàm buyNow
-                    className=' mt-2 mx-auto px-4 py-2 bg-amber-300 text-white border-none outline-none rounded-full hover:bg-primary/80 '
+                    className={` mt-2 mx-auto px-4 py-2 bg-amber-300 text-white border-none outline-none rounded-full hover:bg-primary/80 ${product.quantity === 0 ? 'cursor-not-allowed hover:bg-amber-300' : ''}`}
                   >
                     Mua ngay
                   </button>

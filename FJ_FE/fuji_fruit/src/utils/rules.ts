@@ -95,7 +95,15 @@ export const schema = yup.object({
   })
 })
 
+export const paymentSchema = yup.object().shape({
+  name: yup.string().required('Tên không được bỏ trống'),
+  delivery_address: yup.string().required('Địa chỉ giao hàng không được bỏ trống'),
+  phone_number: yup.string().required('Số điện thoại không được bỏ trống'),
+  note: yup.string()
+})
+
 export const loginSchema = schema.omit(['confirm_password', 'name'])
 export type LoginSchema = yup.InferType<typeof loginSchema>
 
 export type Schema = yup.InferType<typeof schema>
+export type paymentSchema = yup.InferType<typeof paymentSchema>

@@ -9,6 +9,8 @@ export const path = {
   productDetail: '/product/:productId',
   blogDetail: '/blog/:blogId',
   cart: '/cart',
+  payment: '/payment',
   blog: '/blog',
-  contact: '/contact'
+  contact: '/contact',
+  adminProduct: '/admin/products'
 } as const

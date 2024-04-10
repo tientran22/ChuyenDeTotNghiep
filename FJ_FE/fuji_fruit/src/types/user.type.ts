@@ -1,8 +1,8 @@
-// type Role = 'User' | 'Admin'
+type Role = 'user' | 'admin'
 
 export interface User {
   _id: string
-  // roles: Role[]
+  roles: Role[]
   email: string
   name: string
   createdAt: string

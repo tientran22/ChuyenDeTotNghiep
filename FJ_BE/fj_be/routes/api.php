@@ -10,7 +10,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BlogController;
-
+use App\Http\Controllers\OrderController;
 
 
 
@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
-Route::post('/auth/login', [AuthController::class, 'loginUser']);
+Route::post('/auth/login', [AuthController::class, 'loginUser'])->middleware('admin');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
@@ -62,6 +62,12 @@ Route::get('/home/getProductsBestSeller', [HomeController::class, 'getProductsBe
 // Blog
 Route::get('/blog', [BlogController::class, 'getAllBlog']);
 Route::get('/blog/{blogId}',[BlogController::class, 'getBlogDetail']);
+
+
+// Order
+
+
+Route::post('/orders', [OrderController::class, 'store']);
 
 
 
