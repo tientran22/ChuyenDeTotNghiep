@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
-import { Link, createSearchParams, useNavigate } from 'react-router-dom'
+import { useContext, useState } from 'react'
+import { Link, createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import productHomeApi from 'src/apis/home.api'
 import purchaseApi from 'src/apis/purchase.api'
 import AnimationText from 'src/components/AnimationText'
@@ -15,7 +15,8 @@ import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import categoryApi from 'src/apis/categories.api'
-import Navbar from 'src/components/Navbar/Navbar'
+
+import { AppContext } from 'src/contexts/app.context'
 
 const CommentsData = [
   {
@@ -54,6 +55,7 @@ export default function Home() {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
   const [responseData, setResponseData] = useState<string>('') // Khởi tạo state để lưu trữ responseData
   const [visibleProducts, setVisibleProducts] = useState(5) // Số lượng sản phẩm được hiển thị ban đầu
+  const { isAuthenticated } = useContext(AppContext)
 
   const queryClient = useQueryClient()
   const [buyCount, setBuyCount] = useState(1)
@@ -210,21 +212,23 @@ export default function Home() {
           <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 mt-6 gap-4'>
             {Array.isArray(productsImportData?.data.data) &&
               productsImportData?.data.data.slice(0, visibleProducts).map((product: Product) => (
-                <Link
-                  to={`${path.products}/${generateNameId({ name: product.name, id: product.id })}`}
-                  key={product.id}
-                >
+                <div key={product.id}>
                   <div className='bg-white relative text-center  rounded-md hover:translate-y-2 hover:shadow-md duration-150 transition-transform overflow-hidden'>
-                    <div className='w-full pt-[100%] relative'>
-                      <img
-                        src={`/src/assets/images/products/${product.image}`}
-                        alt={product.name}
-                        className='absolute w-full h-full top-0 left-0'
-                      />
-                    </div>
-                    <div className='p-2 overflow-hidden'>
+                    <Link to={`${path.products}/${generateNameId({ name: product.name, id: product.id })}`}>
+                      <div className='w-full pt-[100%] relative'>
+                        <img
+                          src={`/src/assets/images/products/${product.image}`}
+                          alt={product.name}
+                          className='absolute w-full h-full top-0 left-0'
+                        />
+                      </div>
+                    </Link>
+                    <Link
+                      to={`${path.products}/${generateNameId({ name: product.name, id: product.id })}`}
+                      className='p-2 overflow-hidden'
+                    >
                       <div className='min-h-[2.5rem] line-clamp-2 font-semibold  text-primary'>{product.name}</div>
-                    </div>
+                    </Link>
                     {product.quantity === 0 ? (
                       <div className='px-1 py-2 text-xs bg-primary absolute top-0 rounded-sm right-0 text-white'>
                         {product.quantity === 0 ? 'Hết hàng' : ''}
@@ -280,7 +284,7 @@ export default function Home() {
                   <div className='mt-4 flex items-center'>
                     <button
                       onClick={(e) => {
-                        addToCart(openPopup, e)(product.id) // Gọi hàm addToCart khi nút được nhấn
+                        !isAuthenticated ? navigate(path.login) : addToCart(openPopup, e)(product.id) // Gọi hàm addToCart khi nút được nhấn
                       }}
                       className={`h-8 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-2 text-sm mx-auto capitalize text-primary shadow-sm hover:bg-primary/5 gap-2 ${product.quantity === 0 ? 'cursor-not-allowed hover:bg-primary/10' : ''}`}
                     >
@@ -301,7 +305,7 @@ export default function Home() {
                       thêm vào giỏ hàng
                     </button>
                   </div>
-                </Link>
+                </div>
               ))}
           </div>
           <div className='flex items-center justify-center mt-4'>
@@ -348,7 +352,7 @@ export default function Home() {
                     {product.name}
                   </Link>
                   <button
-                    onClick={() => buyNow(product.id)} // Thêm tham số product.id khi gọi hàm buyNow
+                    onClick={() => (!isAuthenticated ? navigate(path.login) : buyNow(product.id))} // Thêm tham số product.id khi gọi hàm buyNow
                     className={` mt-2 mx-auto px-4 py-2 bg-amber-300 text-white border-none outline-none rounded-full hover:bg-primary/80 ${product.quantity === 0 ? 'cursor-not-allowed hover:bg-amber-300' : ''}`}
                   >
                     Mua ngay

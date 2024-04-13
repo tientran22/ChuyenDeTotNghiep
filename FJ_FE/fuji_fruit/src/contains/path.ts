@@ -12,5 +12,6 @@ export const path = {
   payment: '/payment',
   blog: '/blog',
   contact: '/contact',
-  adminProduct: '/admin/products'
+  adminProduct: '/admin/products',
+  thankYou: '/thankyou'
 } as const

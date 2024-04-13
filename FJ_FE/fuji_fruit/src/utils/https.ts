@@ -38,6 +38,7 @@ class Http {
 
     this.instance.interceptors.response.use(
       (response) => {
+        console.log(response)
         const { config, data } = response
 
         // Xác định URL được gọi
@@ -52,7 +53,7 @@ class Http {
           this.userRoles = data.data.user.roles
           setUserRolestoLS(this.userRoles)
           setAccessTokentoLS(this.accessToken)
-          setProfileToLS(data.data.user)
+          setProfileToLS(data.data.user.name)
         }
 
         // Xử lý logic đăng xuất

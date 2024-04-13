@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
-import { useContext } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import AuthApi from 'src/apis/auth.api'
 import AnimationText from 'src/components/AnimationText'
 import Button from 'src/components/Button'
@@ -10,8 +11,11 @@ import Input from 'src/components/Input'
 import { path } from 'src/contains/path'
 import { AppContext } from 'src/contexts/app.context'
 import { ErrorResponse } from 'src/types/utils.type'
+import http from 'src/utils/https'
 import { Schema, schema } from 'src/utils/rules'
 import { isAxiosUnauthorizedError } from 'src/utils/utils'
+
+// import axios from 'axios'
 
 type FormData = Pick<Schema, 'email' | 'password'>
 const loginSchema = schema.pick(['email', 'password'])
@@ -19,7 +23,6 @@ const loginSchema = schema.pick(['email', 'password'])
 export default function Login() {
   const { setisAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
-
   const {
     register,
     handleSubmit,
@@ -60,6 +63,39 @@ export default function Login() {
     }
   })
 
+  const { data } = useQuery({
+    queryKey: ['product'],
+    queryFn: () => AuthApi.loginGoogleAccount()
+  })
+
+  const loginUrl = data?.data.url
+
+  // useEffect(() => {
+  //   http
+  //     .get('/api/auth', {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Accept: 'application/json'
+  //       }
+  //     })
+  //     .then((response) => {
+  //       // const userData = response.data.data.user // Lấy dữ liệu người dùng từ response
+  //       console.log(response)
+  //       // setisAuthenticated(true)
+  //       // setProfile(userData)
+
+  //       // if (userData.roles.includes('admin')) {
+  //       //   navigate('/admin') // Điều hướng đến trang admin nếu người dùng có vai trò là admin
+  //       // } else {
+  //       //   navigate('/') // Điều hướng đến trang chính nếu người dùng không phải là admin
+  //       // }
+  //       setLoginUrl(response.data.url)
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching login URL:', error)
+  //     })
+  // }, [])
+
   const onSubmit = handleSubmit((data) => {
     loginAccountMutation.mutate(data)
   })
@@ -97,12 +133,24 @@ export default function Login() {
               />
               <Button
                 type='submit'
-                className='w-full mt-2 p-3 uppercase text-white text-xs bg-primary hover:bg-primary/80 rounded-sm transition-all flex items-center justify-center'
+                className='w-full my-2 p-3 uppercase text-white text-xs bg-primary hover:bg-primary/80 rounded-sm transition-all flex items-center justify-center'
                 disabled={loginAccountMutation.isPending}
                 isLoading={loginAccountMutation.isPending}
               >
                 Đăng Nhập
               </Button>
+
+              <div className='flex items-center justify-center mt-4'>
+                {loginUrl && (
+                  <Link to={loginUrl} className='ml-3'>
+                    <img
+                      src='https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png'
+                      alt='Google Sign In'
+                      className='w-full h-full object-cover'
+                    />
+                  </Link>
+                )}
+              </div>
 
               <div className='flex item-center justify-center mt-4 gap-2'>
                 <span className='text-gray-400'>Bạn chưa có tài khoản?</span>

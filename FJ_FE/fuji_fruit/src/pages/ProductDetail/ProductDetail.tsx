@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 
 import { useNavigate, useParams } from 'react-router-dom'
 import productApi from 'src/apis/products.api'
@@ -15,10 +15,12 @@ import purchaseApi from 'src/apis/purchase.api'
 import { purchaseStatus } from 'src/contains/purchase'
 import Popup from 'src/components/Popup/Popup'
 import { path } from 'src/contains/path'
+import { AppContext } from 'src/contexts/app.context'
 
 export default function ProductDetail() {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
   const [responseData, setResponseData] = useState<string>('') // Khởi tạo state để lưu trữ responseData
+  const { isAuthenticated } = useContext(AppContext)
   const queryClient = useQueryClient()
   // Xử lí url thân thiện
   const { productId } = useParams()
@@ -202,7 +204,9 @@ export default function ProductDetail() {
 
               <div className='mt-8 flex items-center'>
                 <button
-                  onClick={addToCart(openPopup)}
+                  onClick={() => {
+                    !isAuthenticated ? navigate(path.login) : addToCart(openPopup)
+                  }}
                   className={`h-12 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-5 capitalize text-primary shadow-sm hover:bg-primary/5 gap-2 ${product.quantity === 0 ? 'cursor-not-allowed' : ''}`}
                 >
                   <svg
@@ -223,7 +227,7 @@ export default function ProductDetail() {
                 </button>
 
                 <button
-                  onClick={() => buyNow(product.id)}
+                  onClick={() => (!isAuthenticated ? navigate(path.login) : buyNow(product.id))}
                   className={`flex ml-4 h-12 min-w-[5rem] items-center justify-center rounded-sm bg-primary px-5 capitalize text-white shadow-sm outline-none hover:bg-primary/90 ${product.quantity === 0 ? 'cursor-not-allowed' : ''}`}
                 >
                   Mua ngay

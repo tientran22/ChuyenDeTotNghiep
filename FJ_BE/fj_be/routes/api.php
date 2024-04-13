@@ -11,7 +11,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\OrderController;
-
+use App\Http\Controllers\ContactController;
 
 
 
@@ -32,6 +32,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser'])->middleware('admin');
+Route::get('auth', [AuthController::class, 'redirectToAuth']);
+Route::get('auth/callback', [AuthController::class, 'handleAuthCallback']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
@@ -68,6 +71,11 @@ Route::get('/blog/{blogId}',[BlogController::class, 'getBlogDetail']);
 
 
 Route::post('/orders', [OrderController::class, 'store']);
+
+// Contact
+
+
+Route::post('/send-email', [ContactController::class, 'sendEmail']);
 
 
 

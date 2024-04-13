@@ -4,7 +4,7 @@ export const setAccessTokentoLS = (access_token: string) => {
   localStorage.setItem('access_token', access_token)
 }
 
-export const getAccessTokenFromLS = () => localStorage.getItem('access_token') || ''
+export const  getAccessTokenFromLS = () => localStorage.getItem('access_token') || ''
 
 export const setUserRolestoLS = (user_roles: string) => {
   localStorage.setItem('user_roles', user_roles)

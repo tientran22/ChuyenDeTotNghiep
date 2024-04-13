@@ -20,6 +20,9 @@ import BlogDetail from './pages/BlogDetail'
 import AdminLayout from './layouts/AdminLayout'
 import AdminProducts from './pages/AdminProducts'
 import Payment from './pages/Payment'
+import Thankyou from './pages/Thankyou'
+import SingIn from './components/SingIn'
+import GoogleCallback from './components/GoogleCallback'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -51,6 +54,14 @@ function useRouteElements() {
       element: (
         <MainLayout>
           <Home />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/si',
+      element: (
+        <MainLayout>
+          <SingIn />
         </MainLayout>
       )
     },
@@ -123,6 +134,14 @@ function useRouteElements() {
           element: (
             <MainLayout>
               <Payment />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.thankYou,
+          element: (
+            <MainLayout>
+              <Thankyou />
             </MainLayout>
           )
         }

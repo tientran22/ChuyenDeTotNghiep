@@ -1,29 +1,40 @@
-import { useContext, useState } from 'react'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useContext, useEffect, useState } from 'react'
 import Popover from '../Popover'
 import { AppContext } from 'src/contexts/app.context'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { path } from 'src/contains/path'
 import Popup from '../Popup/Popup'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import AuthApi from 'src/apis/auth.api'
 import { purchaseStatus } from 'src/contains/purchase'
 
+import http from 'src/utils/https'
+import { clearLS, getAccessTokenFromLS, setAccessTokentoLS, setProfileToLS } from 'src/utils/auth'
+
+interface CallbackData {
+  access_token: string
+}
+
 export default function NavHeader() {
+  const [data, setData] = useState<CallbackData | null>(null)
+  const location = useLocation()
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
   const [responseData, setResponseData] = useState<string>('') // Khởi tạo state để lưu trữ responseData
-  const { setisAuthenticated, isAuthenticated, profile } = useContext(AppContext)
+  const { setisAuthenticated, isAuthenticated, profile, setProfile } = useContext(AppContext)
   const queryClient = useQueryClient()
-
+  console.log(isAuthenticated)
   const logoutMutation = useMutation({
     mutationFn: AuthApi.logout,
     onSuccess: (data) => {
+      clearLS()
       const responseData = data.data.message
-      console.log(data.data.message)
       // Mở popup khi thành công
       // Cập nhật state với responseData
       setResponseData(responseData)
       openPopup()
       setisAuthenticated(false)
+
       queryClient.removeQueries({ queryKey: ['purchases', { status: purchaseStatus.inCart }] })
     },
     onError: (data) => {
@@ -31,12 +42,36 @@ export default function NavHeader() {
     }
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleLogout = (openPopup: () => void) => {
     return () => {
       logoutMutation.mutate()
     }
   }
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const response = await http.get(`/api/auth/callback${location.search}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          }
+        })
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch access token')
+        }
+        setisAuthenticated(true) // Cập nhật trạng thái xác thực của người dùng
+        const data = response.data
+        const accessToken = data.access_token
+        setAccessTokentoLS(accessToken) // Lưu access token vào Local Storage
+        setProfileToLS(data.user) // Lưu thông tin người dùng vào Local Storage
+        setProfile(data.user) // Cập nhật thông tin người dùng trong ứng dụng
+        setData(data)
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    })()
+  }, [])
 
   const openPopup = () => {
     setIsPopupOpen(true)

@@ -4,11 +4,11 @@ import { useMutation } from '@tanstack/react-query'
 
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import orderApi from 'src/apis/order.api'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
-import Popup from 'src/components/Popup/Popup'
+import { path } from 'src/contains/path'
 import { Order, OrderItem } from 'src/types/order.type'
 import { Purchase } from 'src/types/purchase.type'
 import { paymentSchema } from 'src/utils/rules'
@@ -18,8 +18,7 @@ import { formatCurrency } from 'src/utils/utils'
 type FormData = Pick<paymentSchema, 'name' | 'delivery_address' | 'phone_number' | 'note'>
 
 export default function Payment() {
-  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
-  const [responseData, setResponseData] = useState<string>('') // Khởi tạo state để lưu trữ responseData
+  const navigate = useNavigate()
   const location = useLocation()
   const { state } = location
 
@@ -72,15 +71,7 @@ export default function Payment() {
     })
   }
 
-  const openPopup = () => {
-    setIsPopupOpen(true)
-  }
-
-  const closePopup = () => {
-    setIsPopupOpen(false)
-  }
-
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit(() => {
     // Gửi dữ liệu lên server
     Ordermutation.mutate(
       {
@@ -96,13 +87,8 @@ export default function Payment() {
         }))
       },
       {
-        onSuccess: (data) => {
-          const responseData = data.data.message
-          console.log(data.data.message)
-          // Mở popup khi thành công
-          // Cập nhật state với responseData
-          setResponseData(responseData)
-          openPopup()
+        onSuccess: () => {
+          navigate(path.thankYou)
         }
       }
     )
@@ -110,7 +96,6 @@ export default function Payment() {
 
   return (
     <div className='bg-white pt-16'>
-      <Popup message={responseData} isOpen={isPopupOpen} onClose={closePopup} />
       <div className='container'>
         <div className='font-semibold text-4xl border-b border-gray-200 text-primary mb-4'>Thanh toán</div>
         <form className='px-8 pt-6 pb-8 mb-4' onSubmit={onSubmit} noValidate>
@@ -218,8 +203,8 @@ export default function Payment() {
               <Button
                 type='submit'
                 className='w-full mt-4 p-3 uppercase text-white text-xs bg-primary hover:bg-primary/80 rounded-sm transition-all flex items-center justify-center'
-                // disabled={Ordermutation.isPending}
-                // isLoading={Ordermutation.isPending}
+                disabled={Ordermutation.isPending}
+                isLoading={Ordermutation.isPending}
               >
                 Đặt hàng
               </Button>
