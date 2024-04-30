@@ -8,8 +8,8 @@ export interface Product {
   view: number
   name: string
   description: string
-  brand: string
-  category: string
+  brand_id: number
+  category_id: number
   image: string
   createdAt: string
   updatedAt: string
@@ -23,6 +23,7 @@ export interface ProductList {
     page: number
     limit: number
     page_size: number
+    total_items: number
   }
 }
 

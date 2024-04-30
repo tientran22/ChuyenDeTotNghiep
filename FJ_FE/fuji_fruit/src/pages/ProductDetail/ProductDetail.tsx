@@ -44,7 +44,7 @@ export default function ProductDetail() {
 
   // console.log(productSimilar)
 
-  const queryConfig: ProductListConfig = { limit: 6, page: 1, category: product?.category }
+  const queryConfig: ProductListConfig = { limit: 6, page: 1, category: product?.category_id }
 
   const addToCartMutation = useMutation({
     mutationFn: (body: { product_id: string; buy_count: number }) => purchaseApi.addToCart(body)

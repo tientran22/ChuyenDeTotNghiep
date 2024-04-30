@@ -12,6 +12,13 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\BrandController as AdminBrandController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+
+
+
 
 
 
@@ -83,6 +90,41 @@ Route::post('/send-email', [ContactController::class, 'sendEmail']);
 
 
 
+Route::prefix('admin')->group(function () {
+    // Products
+    Route::get('products', [AdminProductController::class, 'index']);
+    Route::get('products/create', [AdminProductController::class, 'create']);
+    Route::post('products', [AdminProductController::class, 'store']);
+    Route::get('products/{id}/edit', [AdminProductController::class, 'edit']);
+    Route::put('products/{id}', [AdminProductController::class, 'edit']);
+    Route::get('products/search', [AdminProductController::class, 'search']);
+    Route::get('products/{id}', [AdminProductController::class, 'show']);
+    Route::delete('products/{id}', [AdminProductController::class, 'destroy']);
+    // Blog
+    Route::get('blogs', [AdminBLogController::class, 'index']);
+    Route::get('blogs/create', [AdminBLogController::class, 'create']);
+    Route::post('blogs', [AdminBLogController::class, 'store']);
+    Route::get('blogs/{id}/edit', [AdminBLogController::class, 'edit']);
+    Route::put('blogs/{id}', [AdminBLogController::class, 'edit']);
+    Route::get('blogs/{id}', [AdminBLogController::class, 'show']);
+    Route::delete('blogs/{id}', [AdminBLogController::class, 'destroy']);
+    // Brand
+    Route::get('brands', [AdminBrandController::class, 'index']);
+    Route::get('brands/create', [AdminBrandController::class, 'create']);
+    Route::post('brands', [AdminBrandController::class, 'store']);
+    Route::get('brands/{id}/edit', [AdminBrandController::class, 'edit']);
+    Route::put('brands/{id}', [AdminBrandController::class, 'edit']);
+    Route::get('brands/{id}', [AdminBrandController::class, 'show']);
+    Route::delete('brands/{id}', [AdminBrandController::class, 'destroy']);
+    // Category
+    Route::get('categories', [AdminCategoryController::class, 'index']);
+    Route::get('categories/create', [AdminaCtegoryController::class, 'create']);
+    Route::post('categories', [AdminCategoryController::class, 'store']);
+    Route::get('categories/{id}/edit', [AdminCategoryController::class, 'edit']);
+    Route::put('categories/{id}', [AdminCategoryController::class, 'edit']);
+    Route::get('categories/{id}', [AdminCategoryController::class, 'show']);
+    Route::delete('categories/{id}', [AdminCategoryController::class, 'destroy']);
+});
 
  
 

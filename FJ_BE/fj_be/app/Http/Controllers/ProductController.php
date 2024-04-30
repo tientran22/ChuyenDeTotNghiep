@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Response;
 
 class ProductController extends Controller
 {
-    public function getProducts(Request $request)
+    public function getProducts( Request $request)
     {
         // Lấy tham số từ request hoặc sử dụng giá trị mặc định
         $page = $request->input('page', 1);
@@ -16,7 +16,7 @@ class ProductController extends Controller
 
         // Lấy tổng số sản phẩm
         // $totalProducts = Product::count();
-
+        
         // Tính tổng số trang
         // $totalPages = ceil($totalProducts / $limit);
 

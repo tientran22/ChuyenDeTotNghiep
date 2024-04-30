@@ -33,7 +33,7 @@ export default function AdminSidebar() {
           <span className='text-xl'>
             <HiOutlineLogout />
           </span>
-          Logout
+          Đăng xuất
         </div>
       </div>
     </div>

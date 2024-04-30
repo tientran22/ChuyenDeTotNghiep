@@ -8,6 +8,7 @@ export default {
   corePlugins: {
     container: false,
   },
+
   theme: {
     extend: {
       colors: {

@@ -21,8 +21,10 @@ import AdminLayout from './layouts/AdminLayout'
 import AdminProducts from './pages/AdminProducts'
 import Payment from './pages/Payment'
 import Thankyou from './pages/Thankyou'
-import SingIn from './components/SingIn'
-import GoogleCallback from './components/GoogleCallback'
+import { getUserRolesFromLS } from './utils/auth'
+import AdminBlog from './pages/AdminBlogs'
+import AdminBrands from './pages/AdminBrands'
+import AdminCategories from './pages/AdminCategories'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -35,11 +37,12 @@ function RejectedRoute() {
 }
 
 function AdminRoute() {
-  const { isAuthenticated, profile } = useContext(AppContext)
+  const { isAuthenticated } = useContext(AppContext)
 
   // Kiểm tra nếu người dùng đã xác thực, là admin và không có vai trò là "user" thì cho phép truy cập trang admin,
   // ngược lại chuyển hướng về trang chính
-  if (isAuthenticated && profile?.roles.includes('admin')) {
+  const userRoles = getUserRolesFromLS()
+  if (isAuthenticated && userRoles.includes('admin')) {
     return <Outlet />
   } else {
     return <Navigate to='/' />
@@ -57,14 +60,7 @@ function useRouteElements() {
         </MainLayout>
       )
     },
-    {
-      path: '/si',
-      element: (
-        <MainLayout>
-          <SingIn />
-        </MainLayout>
-      )
-    },
+
     {
       path: path.products,
       index: true,
@@ -188,6 +184,30 @@ function useRouteElements() {
           element: (
             <AdminLayout>
               <AdminProducts />
+            </AdminLayout>
+          )
+        },
+        {
+          path: path.adminBlog,
+          element: (
+            <AdminLayout>
+              <AdminBlog />
+            </AdminLayout>
+          )
+        },
+        {
+          path: path.adminBrand,
+          element: (
+            <AdminLayout>
+              <AdminBrands />
+            </AdminLayout>
+          )
+        },
+        {
+          path: path.adminCategory,
+          element: (
+            <AdminLayout>
+              <AdminCategories />
             </AdminLayout>
           )
         }

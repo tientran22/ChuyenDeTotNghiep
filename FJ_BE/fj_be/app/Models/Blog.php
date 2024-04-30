@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Blog extends Model
 {
     protected $table = 'blogs';
-    protected $fillable = ['title', 'description', 'image']; // Các trường có thể được điền vào
+    protected $fillable = ['title','content', 'description', 'image']; // Các trường có thể được điền vào
 }

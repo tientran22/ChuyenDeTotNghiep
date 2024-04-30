@@ -30,6 +30,8 @@ function ProductList() {
     }
   })
 
+  console.log(queryConfig)
+
   const { data: categoriesData } = useQuery({
     queryKey: ['categories'],
     queryFn: () => {
