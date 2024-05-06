@@ -7,7 +7,8 @@ import {
   HiOutlineQuestionMarkCircle,
   HiOutlineCog,
   HiOutlineCollection,
-  HiOutlineLightBulb
+  HiOutlineLightBulb,
+  HiOutlinePhotograph
 } from 'react-icons/hi'
 
 export const DASHBOARD_SIDEBAR_LINKS = [
@@ -53,6 +54,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
     label: 'Thương hiệu',
     path: '/admin/brands',
     icon: <HiOutlineLightBulb />
+  },
+  {
+    key: 'banner',
+    label: 'Banner',
+    path: '/admin/banners',
+    icon: <HiOutlinePhotograph />
   }
 ]
 

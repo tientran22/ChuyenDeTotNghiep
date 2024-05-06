@@ -371,7 +371,7 @@ export default function AdminBrands() {
                   clip-rule='evenodd'
                 />
               </svg>
-              <p className='mb-4 text-gray-500 dark:text-gray-300'>Bạn có muốn xóa sản phẩm này?</p>
+              <p className='mb-4 text-gray-500 dark:text-gray-300'>Bạn có muốn xóa danh múc này?</p>
               <div className='flex justify-center items-center space-x-4'>
                 <button
                   data-modal-toggle='deleteModal'

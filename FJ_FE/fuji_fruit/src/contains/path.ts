@@ -3,7 +3,7 @@ export const path = {
   home: '/',
   login: '/login',
   register: '/register',
-  profile: '/profile',
+  order: '/order',
   logout: '/logout',
   admin: '/admin',
   productDetail: '/product/:productId',
@@ -16,5 +16,8 @@ export const path = {
   thankYou: '/thankyou',
   adminBlog: '/admin/blogs',
   adminBrand: '/admin/brands',
-  adminCategory: '/admin/categories'
+  adminCategory: '/admin/categories',
+  adminUser: '/admin/users',
+  adminOrder: '/admin/orders',
+  adminBanner: '/admin/banners'
 } as const

@@ -10,7 +10,7 @@ import AuthApi from 'src/apis/auth.api'
 import { purchaseStatus } from 'src/contains/purchase'
 
 import http from 'src/utils/https'
-import { clearLS, getAccessTokenFromLS, setAccessTokentoLS, setProfileToLS } from 'src/utils/auth'
+import { clearLS, setAccessTokentoLS, setProfileToLS } from 'src/utils/auth'
 
 interface CallbackData {
   access_token: string
@@ -23,7 +23,7 @@ export default function NavHeader() {
   const [responseData, setResponseData] = useState<string>('') // Khởi tạo state để lưu trữ responseData
   const { setisAuthenticated, isAuthenticated, profile, setProfile } = useContext(AppContext)
   const queryClient = useQueryClient()
-  console.log(isAuthenticated)
+
   const logoutMutation = useMutation({
     mutationFn: AuthApi.logout,
     onSuccess: (data) => {
@@ -66,6 +66,7 @@ export default function NavHeader() {
         setAccessTokentoLS(accessToken) // Lưu access token vào Local Storage
         setProfileToLS(data.user) // Lưu thông tin người dùng vào Local Storage
         setProfile(data.user) // Cập nhật thông tin người dùng trong ứng dụng
+        console.log(data)
         setData(data)
       } catch (error) {
         console.error('Error:', error)
@@ -140,14 +141,11 @@ export default function NavHeader() {
             className='flex items-center hover:opacity-70 transition-all cursor-pointer ml-10 '
             renderPopover={
               <div className='relative rounded-sm border border-gray-200 bg-white shadow-md '>
-                <Link
-                  to={path.profile}
-                  className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-primary'
-                >
+                <Link to='' className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-primary'>
                   Tài khoản của tôi
                 </Link>
                 <Link
-                  to='/'
+                  to={path.order}
                   className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-primary'
                 >
                   Đơn mua

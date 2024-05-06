@@ -20,7 +20,8 @@ export default function useQueryConfig() {
       max_price: queryParams.max_price,
       min_price: queryParams.min_price,
       category: queryParams.category,
-      brand: queryParams.brand
+      brand: queryParams.brand,
+      roles: queryParams.roles
     },
     isUndefined
   )

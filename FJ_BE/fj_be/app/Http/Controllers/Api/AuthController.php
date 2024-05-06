@@ -47,7 +47,7 @@ use Laravel\Socialite\Contracts\User as SocialiteUser;
                 $token = $user->createToken('AppName')->plainTextToken;
 
                 return response()->json([
-                    'message' => 'Đăng nhập thành công',
+                    'message' => 'Đăng kí thành công',
                     'data' => [
                         'access_token' => $token,
                         'expires' => '7d',
@@ -104,7 +104,7 @@ use Laravel\Socialite\Contracts\User as SocialiteUser;
 
                         // Trả về phản hồi thành công với dữ liệu người dùng và token
                         return response()->json([
-                            'message' => 'Đăng kí thành công',
+                            'message' => 'Đăng nhập thành công',
                             'data' => [
                                 'access_token' => $token,
                                 'expires' => '7d',

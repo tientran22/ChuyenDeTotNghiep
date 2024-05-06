@@ -2,16 +2,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { QueryObserverResult, RefetchOptions, useMutation, useQuery } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AdminProductApi from 'src/apis/adminProducts.api'
 import brandApi from 'src/apis/brand.api'
 import categoryApi from 'src/apis/categories.api'
 import Popup from 'src/components/Popup/Popup'
-import { ProductList } from 'src/types/products.type'
+import { Product, ProductList } from 'src/types/products.type'
 import { SuccessResponse } from 'src/types/utils.type'
 interface Props {
   selectedItemId: string
   isEditModalOpen: boolean
+  productData: Product | undefined
   closeEditModal: () => void
   refetchAdminProducts: (
     options?: RefetchOptions | undefined
@@ -21,7 +22,8 @@ export default function FormEditProduct({
   isEditModalOpen,
   closeEditModal,
   selectedItemId,
-  refetchAdminProducts
+  refetchAdminProducts,
+  productData
 }: Props) {
   const [formData, setFormData] = useState({
     name: '',
@@ -58,6 +60,19 @@ export default function FormEditProduct({
       return brandApi.getBrand()
     }
   })
+
+  useEffect(() => {
+    if (productData) {
+      setFormData({
+        name: productData.name,
+        quantity: productData.quantity,
+        price: productData.price,
+        price_before_discount: productData.price_before_discount,
+        description: productData.description,
+        image: FileNameImage
+      })
+    }
+  }, [productData])
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target
     setFormData((prevFormData) => ({

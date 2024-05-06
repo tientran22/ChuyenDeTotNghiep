@@ -53,7 +53,7 @@ class Http {
           this.userRoles = data.data.user.roles
           setUserRolestoLS(this.userRoles)
           setAccessTokentoLS(this.accessToken)
-          setProfileToLS(data.data.user.name)
+          setProfileToLS(data.data.user)
         }
 
         // Xử lý logic đăng xuất

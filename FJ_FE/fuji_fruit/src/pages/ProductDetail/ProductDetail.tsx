@@ -99,10 +99,11 @@ export default function ProductDetail() {
     setIsPopupOpen(false)
   }
 
-  const addToCart = (openPopup: () => void) => {
-    return () => {
+  const addToCart =
+    (openPopup: () => void, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => (productId: string) => {
+      event.preventDefault() // Ngăn chặn hành vi mặc định của sự kiện click
       addToCartMutation.mutate(
-        { buy_count: buyCount, product_id: product?.id as string },
+        { buy_count: buyCount, product_id: productId },
         {
           onSuccess: (data) => {
             const responseData = data.data.message
@@ -117,8 +118,6 @@ export default function ProductDetail() {
         }
       )
     }
-  }
-
   return (
     <div className=''>
       <Popup message={responseData} isOpen={isPopupOpen} onClose={closePopup} />
@@ -204,8 +203,8 @@ export default function ProductDetail() {
 
               <div className='mt-8 flex items-center'>
                 <button
-                  onClick={() => {
-                    !isAuthenticated ? navigate(path.login) : addToCart(openPopup)
+                  onClick={(e) => {
+                    !isAuthenticated ? navigate(path.login) : addToCart(openPopup, e)(product.id) // Gọi hàm addToCart khi nút được nhấn
                   }}
                   className={`h-12 flex items-center justify-center rounded-sm border border-primary bg-primary/10 px-5 capitalize text-primary shadow-sm hover:bg-primary/5 gap-2 ${product.quantity === 0 ? 'cursor-not-allowed' : ''}`}
                 >

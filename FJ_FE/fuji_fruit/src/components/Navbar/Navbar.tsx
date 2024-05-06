@@ -23,7 +23,7 @@ export default function Navbar() {
   useEffect(() => {
     function handleScroll() {
       const scrollTop = window.pageYOffset
-      setIsScrolled(scrollTop > 200)
+      setIsScrolled(scrollTop > 190)
     }
 
     window.addEventListener('scroll', handleScroll)

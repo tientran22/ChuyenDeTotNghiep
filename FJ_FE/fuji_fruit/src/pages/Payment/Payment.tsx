@@ -24,7 +24,10 @@ export default function Payment() {
 
   const { checkedPurchases, totalCheckedPurchasePrice } = state
   const [formData, setFormData] = useState<Order>({
+    id: '',
+    status: '',
     name: '',
+    user_id: 0,
     delivery_address: '',
     phone_number: '',
     total_amount: totalCheckedPurchasePrice as number,

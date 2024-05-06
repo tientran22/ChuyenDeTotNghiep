@@ -1,4 +1,4 @@
-import { Order, OrderItem } from 'src/types/order.type'
+import { Order, OrderItem, OrderListStatus } from 'src/types/order.type'
 import { SuccessResponse } from 'src/types/utils.type'
 import http from 'src/utils/https'
 
@@ -10,7 +10,12 @@ const orderApi = {
     total_amount: number
     note?: string
     items: OrderItem[]
-  }) => http.post<SuccessResponse<Order>>('/api/orders', body)
+  }) => http.post<SuccessResponse<Order>>('/api/orders', body),
+  getOrders(params?: { status: OrderListStatus }) {
+    return http.get<SuccessResponse<Order[]>>('/api/orders', {
+      params
+    })
+  }
 }
 
 export default orderApi

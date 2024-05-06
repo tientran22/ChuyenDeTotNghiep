@@ -35,6 +35,8 @@ export interface ProductListConfig {
   max_price?: number | string
   min_price?: number | string
   name?: string
-  category?: string
+  category?: number
   brand?: string
+  roles?: string
+  status?: string
 }

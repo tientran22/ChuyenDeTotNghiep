@@ -70,32 +70,6 @@ export default function Login() {
 
   const loginUrl = data?.data.url
 
-  // useEffect(() => {
-  //   http
-  //     .get('/api/auth', {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Accept: 'application/json'
-  //       }
-  //     })
-  //     .then((response) => {
-  //       // const userData = response.data.data.user // Lấy dữ liệu người dùng từ response
-  //       console.log(response)
-  //       // setisAuthenticated(true)
-  //       // setProfile(userData)
-
-  //       // if (userData.roles.includes('admin')) {
-  //       //   navigate('/admin') // Điều hướng đến trang admin nếu người dùng có vai trò là admin
-  //       // } else {
-  //       //   navigate('/') // Điều hướng đến trang chính nếu người dùng không phải là admin
-  //       // }
-  //       setLoginUrl(response.data.url)
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching login URL:', error)
-  //     })
-  // }, [])
-
   const onSubmit = handleSubmit((data) => {
     loginAccountMutation.mutate(data)
   })

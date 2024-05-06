@@ -16,6 +16,12 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\BannerController as AdminBannerController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+
+
+
 
 
 
@@ -77,7 +83,10 @@ Route::get('/blog/{blogId}',[BlogController::class, 'getBlogDetail']);
 // Order
 
 
-Route::post('/orders', [OrderController::class, 'store']);
+Route::post('/orders', [OrderController::class, 'store'])->middleware('auth:sanctum');
+Route::get('/orders', [OrderController::class, 'getOrders'])->middleware('auth:sanctum');
+Route::patch('/orders/{id}/cancel', [OrderController::class, 'cancelOrder']);
+
 
 // Contact
 
@@ -100,6 +109,15 @@ Route::prefix('admin')->group(function () {
     Route::get('products/search', [AdminProductController::class, 'search']);
     Route::get('products/{id}', [AdminProductController::class, 'show']);
     Route::delete('products/{id}', [AdminProductController::class, 'destroy']);
+    // Users
+    Route::get('users', [AdminUserController::class, 'index']);
+    Route::get('users/create', [AdminUserController::class, 'create']);
+    Route::post('users', [AdminUserController::class, 'store']);
+    Route::get('users/{id}/edit', [AdminUserController::class, 'edit']);
+    Route::put('users/{id}', [AdminUserController::class, 'edit']);
+    Route::get('users/search', [AdminUserController::class, 'search']);
+    Route::get('users/{id}', [AdminUserController::class, 'show']);
+    Route::delete('users/{id}', [AdminUserController::class, 'destroy']);
     // Blog
     Route::get('blogs', [AdminBLogController::class, 'index']);
     Route::get('blogs/create', [AdminBLogController::class, 'create']);
@@ -108,6 +126,14 @@ Route::prefix('admin')->group(function () {
     Route::put('blogs/{id}', [AdminBLogController::class, 'edit']);
     Route::get('blogs/{id}', [AdminBLogController::class, 'show']);
     Route::delete('blogs/{id}', [AdminBLogController::class, 'destroy']);
+    // Banner
+    Route::get('banners', [AdminBannerController::class, 'index']);
+    Route::get('banners/create', [AdminBannerController::class, 'create']);
+    Route::post('banners', [AdminBannerController::class, 'store']);
+    Route::get('banners/{id}/edit', [AdminBannerController::class, 'edit']);
+    Route::put('banners/{id}', [AdminBannerController::class, 'edit']);
+    Route::get('banners/{id}', [AdminBannerController::class, 'show']);
+    Route::delete('banners/{id}', [AdminBannerController::class, 'destroy']);
     // Brand
     Route::get('brands', [AdminBrandController::class, 'index']);
     Route::get('brands/create', [AdminBrandController::class, 'create']);
@@ -124,6 +150,16 @@ Route::prefix('admin')->group(function () {
     Route::put('categories/{id}', [AdminCategoryController::class, 'edit']);
     Route::get('categories/{id}', [AdminCategoryController::class, 'show']);
     Route::delete('categories/{id}', [AdminCategoryController::class, 'destroy']);
+    // orders
+    Route::get('orders', [AdminOrderController::class, 'index']);
+    Route::get('orders/create', [AdminOrderController::class, 'create']);
+    Route::post('orders', [AdminOrderController::class, 'store']);
+    Route::get('orders/{id}/edit', [AdminOrderController::class, 'edit']);
+    Route::put('orders/{id}', [AdminOrderController::class, 'edit']);
+    Route::get('orders/search', [AdminOrderController::class, 'search']);
+    Route::get('orders/{id}', [AdminOrderController::class, 'show']);
+    Route::delete('orders/{id}', [AdminOrderController::class, 'destroy']);
+    Route::patch('orders/{id}/update-status', [AdminOrderController::class, 'updateStatus']);
 });
 
  

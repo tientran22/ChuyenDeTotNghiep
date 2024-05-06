@@ -1,7 +1,7 @@
 type Role = 'user' | 'admin'
 
 export interface User {
-  _id: string
+  id: string
   roles: Role[]
   email: string
   avatar: string
@@ -9,4 +9,16 @@ export interface User {
   name: string
   createdAt: string
   updatedAt: string
+  phone: number
+  address: string
+}
+
+export interface UserList {
+  users: User[]
+  pagination: {
+    page: number
+    limit: number
+    page_size: number
+    total_items: number
+  }
 }

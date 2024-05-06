@@ -1,22 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unknown-property */
 import { yupResolver } from '@hookform/resolvers/yup'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Button from 'src/components/Button'
 import InputNumber from 'src/components/InputNumber/InputNumber'
 import useQueryConfig from 'src/hooks/useQueryConfig'
-import { NoUndefinedField, SuccessResponse } from 'src/types/utils.type'
+import { NoUndefinedField } from 'src/types/utils.type'
 import { Schema, schema } from 'src/utils/rules'
 import { ObjectSchema } from 'yup'
 import FormCreateProduct from '../FormCreateProduct'
-import axios from 'axios'
+
 import { Brand } from 'src/types/brand.type'
 import { Category } from 'src/types/categories.type'
-import { Product } from 'src/types/products.type'
+
 import { createSearchParams, useNavigate } from 'react-router-dom'
-import { path } from 'src/contains/path'
-import { omit } from 'lodash'
+
 type FormData = NoUndefinedField<Pick<Schema, 'max_price' | 'min_price'>>
 interface Props {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
@@ -29,9 +28,13 @@ interface Props {
   selectedBrands: string[]
   handlebrandChange: (brandId: string) => void
   clearFilters: () => void
+  openFilter: () => void
+  isFilterOpen: boolean
 }
 const priceSchema = schema.pick(['min_price', 'max_price'])
 export default function ProductManagement({
+  openFilter,
+  isFilterOpen,
   onSubmit,
   searchKeyword,
   setSearchKeyword,
@@ -45,7 +48,6 @@ export default function ProductManagement({
 }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isDropdownBrandOpen, setIsDropdownBrandOpen] = useState(false)
 
@@ -68,9 +70,6 @@ export default function ProductManagement({
   const [minPrice, setMinPrice] = useState<string>('') // State for min_price
   const [maxPrice, setMaxPrice] = useState<string>('') // State for max_price
 
-  const openFilter = () => {
-    setIsFilterOpen(!isFilterOpen)
-  }
   console.log(selectedCategories)
   const openModal = () => {
     setIsModalOpen(true)

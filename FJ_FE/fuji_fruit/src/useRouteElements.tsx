@@ -6,7 +6,6 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import RegisterLayout from './layouts/RegisterLayout'
 import MainLayout from './layouts/MainLayout'
-import Profile from './pages/Profile'
 import { useContext } from 'react'
 import { AppContext } from './contexts/app.context'
 import { path } from './contains/path'
@@ -25,6 +24,10 @@ import { getUserRolesFromLS } from './utils/auth'
 import AdminBlog from './pages/AdminBlogs'
 import AdminBrands from './pages/AdminBrands'
 import AdminCategories from './pages/AdminCategories'
+import AdminUsers from './pages/AdminUsers'
+import ADminOrder from './pages/AdminOrder/ADminOrder'
+import Order from './pages/Order'
+import AdminBanner from './pages/AdminBanner'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -110,10 +113,10 @@ function useRouteElements() {
       element: <ProtectedRoute />,
       children: [
         {
-          path: path.profile,
+          path: path.order,
           element: (
             <MainLayout>
-              <Profile />
+              <Order />
             </MainLayout>
           )
         },
@@ -208,6 +211,30 @@ function useRouteElements() {
           element: (
             <AdminLayout>
               <AdminCategories />
+            </AdminLayout>
+          )
+        },
+        {
+          path: path.adminUser,
+          element: (
+            <AdminLayout>
+              <AdminUsers />
+            </AdminLayout>
+          )
+        },
+        {
+          path: path.adminOrder,
+          element: (
+            <AdminLayout>
+              <ADminOrder />
+            </AdminLayout>
+          )
+        },
+        {
+          path: path.adminBanner,
+          element: (
+            <AdminLayout>
+              <AdminBanner />
             </AdminLayout>
           )
         }

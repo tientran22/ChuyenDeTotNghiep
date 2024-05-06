@@ -1,8 +1,8 @@
 import { Product } from './products.type'
 
-export type PurchaseStatus = -1 | 1 | 2 | 3 | 4 | 5
+export type PurchaseStatus = 0 | 1 | 2 | 3 | 4 | 5
 
-export type PurchaseListStatus = PurchaseStatus | 0
+export type PurchaseListStatus = PurchaseStatus | -1
 
 export interface Purchase {
   id: string

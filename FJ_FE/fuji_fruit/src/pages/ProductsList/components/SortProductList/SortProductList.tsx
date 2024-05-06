@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { queryConfig } from '../../ProductList'
 import { Link, createSearchParams, useLocation, useNavigate } from 'react-router-dom'
-import { path } from 'src/contains/path'
 import { order as orderContains, sortBy } from 'src/contains/products'
 import { ProductListConfig } from 'src/types/products.type'
 import classNames from 'classnames'

@@ -35,6 +35,8 @@ interface Pagination {
   total_items: number
 }
 export default function AdminProducts() {
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -51,6 +53,8 @@ export default function AdminProducts() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedBrands, setSelectedBrands] = useState<string[]>([])
   const [products, setProducts] = useState<Product[]>([])
+  const [productData, setProductData] = useState<Product>()
+
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
     limit: 8,
@@ -79,6 +83,9 @@ export default function AdminProducts() {
   }, [actionRef])
 
   const queryConfig = useQueryConfig()
+  const openFilter = () => {
+    setIsFilterOpen(!isFilterOpen)
+  }
   const openPopup = () => {
     setIsPopupOpen(true)
   }
@@ -133,7 +140,7 @@ export default function AdminProducts() {
 
         const response = await axios.get('http://127.0.0.1:8000/api/admin/products/search', {
           params: {
-            search: searchKeyword,
+            name: searchKeyword,
             category: selectedCategories,
             brand: selectedBrands
           }
@@ -142,6 +149,7 @@ export default function AdminProducts() {
         // Thêm các sản phẩm vào mảng chỉ khi chúng đã được trả về từ phản hồi và không phải là undefined
         const productsFromCategory = response.data.data.products.filter((product: Product | undefined) => !!product)
         allProducts = [...allProducts, ...productsFromCategory]
+        setIsFilterOpen(true)
         setPagination(response.data.data.pagination)
         setProducts(allProducts)
       } catch (error) {
@@ -158,7 +166,7 @@ export default function AdminProducts() {
       // Gửi yêu cầu tìm kiếm đến API
       const response = await axios.get('http://127.0.0.1:8000/api/admin/products/search', {
         params: {
-          search: searchKeyword
+          name: searchKeyword
         }
       })
       // Kiểm tra xem có kết quả tìm kiếm không
@@ -178,6 +186,7 @@ export default function AdminProducts() {
     navigate({
       pathname: path.adminProduct,
       search: createSearchParams({
+        ...queryConfig,
         search: searchKeyword
       }).toString()
     })
@@ -196,8 +205,19 @@ export default function AdminProducts() {
     setIsActionOpen(!isActionOpen)
   }
 
-  const openEditModal = (productId: string) => {
+  const openEditModal = async (productId: string) => {
     setIsEditModalOpen(true)
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/api/admin/products/${productId}`) // Thay đổi URL của API theo đường dẫn và tham số cụ thể của bạn
+      const productData = response.data.data // Dữ liệu chi tiết sản phẩm từ API
+      // Lưu trữ dữ liệu chi tiết sản phẩm vào state hoặc hiển thị trực tiếp trong modal
+      setProductData(productData)
+      console.log(response)
+      //   setIsViewModalOpen(true)
+      // Hiển thị modal hoặc thông tin chi tiết sản phẩm theo thiết kế của bạn
+    } catch (error) {
+      console.error('Error fetching product Datas:', error)
+    }
   }
 
   const closeEditModal = () => {
@@ -288,6 +308,8 @@ export default function AdminProducts() {
           {/* <!-- Start coding here --> */}
           <div className='bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden'>
             <ProductManagement
+              openFilter={openFilter}
+              isFilterOpen={isFilterOpen}
               onSubmit={onSubmit}
               searchKeyword={searchKeyword}
               setSearchKeyword={setSearchKeyword}
@@ -473,7 +495,7 @@ export default function AdminProducts() {
               )}
             </div>
             {/* Kết quả tìm kiếm */}
-            {showSearchResult && searchResult.length > 0 && (
+            {showSearchResult && searchResult.length > 0 && !showFilterCategoryResult && (
               <div className='mt-4'>
                 <h2 className='text-lg font-semibold mx-4'>Kết quả tìm kiếm:</h2>
                 <div className='overflow-x-auto'>
@@ -865,6 +887,7 @@ export default function AdminProducts() {
         selectedItemId={selectedItemId}
         closeEditModal={closeEditModal}
         refetchAdminProducts={refetch}
+        productData={productData}
       />
       <ModalViewProduct
         isViewModalOpen={isViewModalOpen}
