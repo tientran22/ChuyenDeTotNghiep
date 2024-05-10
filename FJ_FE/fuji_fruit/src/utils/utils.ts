@@ -1,5 +1,6 @@
 /* eslint-disable import/no-named-as-default-member */
 import axios, { AxiosError, HttpStatusCode } from 'axios'
+import userImage from 'src/assets/images/users/user.svg'
 
 export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
   return axios.isAxiosError(error)
@@ -36,3 +37,5 @@ export const getIdFromBlogId = (blogId: string) => {
   const arr = blogId.split('-i-')
   return arr[arr.length - 1]
 }
+
+export const getAvatarUrl = (avatarName?: string) => (avatarName ? `/src/assets/images/users/${avatarName}` : userImage)

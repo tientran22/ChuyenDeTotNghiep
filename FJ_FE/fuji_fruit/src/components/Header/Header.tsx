@@ -12,6 +12,8 @@ import { purchaseStatus } from 'src/contains/purchase'
 import purchaseApi from 'src/apis/purchase.api'
 
 import NavHeader from '../NavHeader'
+import axios from 'axios'
+import ChatBot from '../ChatBot/ChatBot'
 
 export default function Header() {
   const queryConfig = useQueryConfig()
@@ -97,7 +99,7 @@ export default function Header() {
                   />
                 </svg>
               </div>
-              <div className='text-primary'>
+              <div className='hidden md:block text-primary'>
                 <p className='mb-2'>Hoa quả sạch Fuji</p>
                 <span className='text-xl'>1900 2268</span>
               </div>

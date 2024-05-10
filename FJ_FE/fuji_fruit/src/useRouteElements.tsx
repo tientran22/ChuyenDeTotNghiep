@@ -28,6 +28,8 @@ import AdminUsers from './pages/AdminUsers'
 import ADminOrder from './pages/AdminOrder/ADminOrder'
 import Order from './pages/Order'
 import AdminBanner from './pages/AdminBanner'
+import Profile from './pages/Profile'
+// import Profile from './pages/Profile'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -141,6 +143,15 @@ function useRouteElements() {
           element: (
             <MainLayout>
               <Thankyou />
+            </MainLayout>
+          )
+        },
+        {
+          path: path.profile,
+          element: (
+            <MainLayout>
+              {' '}
+              <Profile />
             </MainLayout>
           )
         }

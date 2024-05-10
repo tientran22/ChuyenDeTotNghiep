@@ -9,7 +9,7 @@ export interface User {
   name: string
   createdAt: string
   updatedAt: string
-  phone: number
+  phone: string
   address: string
 }
 

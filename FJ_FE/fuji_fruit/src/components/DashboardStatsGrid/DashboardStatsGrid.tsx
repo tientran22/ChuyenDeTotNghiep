@@ -1,9 +1,32 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useQuery } from '@tanstack/react-query'
 import React, { ReactNode } from 'react'
 import { IoBagHandle, IoPieChart, IoPeople, IoCart } from 'react-icons/io5'
+import AdminApi from 'src/apis/admin.api'
+import { formatCurrency } from 'src/utils/utils'
 interface BoxWrapperProps {
   children: ReactNode // Định nghĩa children là một ReactNode
 }
 export default function DashboardStatsGrid() {
+  const { data: totalRevenue } = useQuery({
+    queryKey: ['adminRevenue'],
+    queryFn: () => AdminApi.getRevenue()
+  })
+
+  const { data: totalCustomers } = useQuery({
+    queryKey: ['adminCustomer'],
+    queryFn: () => AdminApi.getTotalCustomers()
+  })
+
+  const { data: totalOrders } = useQuery({
+    queryKey: ['adminOrder'],
+    queryFn: () => AdminApi.getTotalOrders()
+  })
+
+  if (!totalRevenue) return null
+  if (!totalCustomers) return null
+  if (!totalOrders) return null
+
   return (
     <div className='flex gap-4'>
       <BoxWrapper>
@@ -13,8 +36,10 @@ export default function DashboardStatsGrid() {
         <div className='pl-4'>
           <span className='text-sm text-gray-500 font-light'>Tổng doanh thu</span>
           <div className='flex items-center'>
-            <strong className='text-xl text-gray-700 font-semibold'>$54232</strong>
-            <span className='text-sm text-green-500 pl-2'>+343</span>
+            <strong className='text-xl text-gray-700 font-semibold'>
+              ₫{formatCurrency(totalRevenue.data.total_Revenue)}
+            </strong>
+            {/* <span className='text-sm text-green-500 pl-2'>+343</span> */}
           </div>
         </div>
       </BoxWrapper>
@@ -37,8 +62,8 @@ export default function DashboardStatsGrid() {
         <div className='pl-4'>
           <span className='text-sm text-gray-500 font-light'>Tổng khách hàng</span>
           <div className='flex items-center'>
-            <strong className='text-xl text-gray-700 font-semibold'>12313</strong>
-            <span className='text-sm text-red-500 pl-2'>-30</span>
+            <strong className='text-xl text-gray-700 font-semibold'>{totalCustomers.data.total_customers}</strong>
+            {/* <span className='text-sm text-red-500 pl-2'>-30</span> */}
           </div>
         </div>
       </BoxWrapper>
@@ -49,8 +74,8 @@ export default function DashboardStatsGrid() {
         <div className='pl-4'>
           <span className='text-sm text-gray-500 font-light'>Tổng đơn hàng</span>
           <div className='flex items-center'>
-            <strong className='text-xl text-gray-700 font-semibold'>16432</strong>
-            <span className='text-sm text-red-500 pl-2'>-43</span>
+            <strong className='text-xl text-gray-700 font-semibold'>{totalOrders.data.total_orders}</strong>
+            {/* <span className='text-sm text-red-500 pl-2'>-43</span> */}
           </div>
         </div>
       </BoxWrapper>

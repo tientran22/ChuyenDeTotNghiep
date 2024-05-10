@@ -118,18 +118,18 @@ export default function Navbar() {
                     </g>
                   </g>
                 </svg>
-                Danh mục sản phẩm
+                <span className='hidden md:block'>Danh mục sản phẩm</span>
               </Link>
             </div>
           </Popover>
         </div>
         <div className='col-span-7 flex items-center justify-center'>
           {/* Link routes ở phía giữa */}
-          <div className='flex gap-10'>
+          <div className='flex items-center justify-center gap-5 md:gap-10'>
             <Link
               to={path.home}
               className={classNames(
-                'text-xl hover:text-primary transform transition-transform hover:scale-x-105',
+                'md:text-xl hover:text-primary transform transition-transform hover:scale-x-105',
                 { 'font-bold text-primary': location.pathname === path.home } // Thêm lớp font-bold nếu liên kết là trang chủ
               )}
             >
@@ -139,7 +139,7 @@ export default function Navbar() {
             <Link
               to={path.products}
               className={classNames(
-                'text-xl hover:text-primary transform transition-transform hover:scale-x-105',
+                'md:text-xl hover:text-primary transform transition-transform hover:scale-x-105',
                 { 'font-bold text-primary': location.pathname === path.products } // Thêm lớp font-bold nếu liên kết là trang chủ
               )}
             >
@@ -148,7 +148,7 @@ export default function Navbar() {
             <Link
               to={path.blog}
               className={classNames(
-                'text-xl hover:text-primary transform transition-transform hover:scale-x-105',
+                'md:text-xl hover:text-primary transform transition-transform hover:scale-x-105',
                 { 'font-bold text-primary': location.pathname === path.blog } // Thêm lớp font-bold nếu liên kết là trang chủ
               )}
             >
@@ -157,7 +157,7 @@ export default function Navbar() {
             <Link
               to={path.contact}
               className={classNames(
-                'text-xl hover:text-primary transform transition-transform hover:scale-x-105',
+                'md:text-xl hover:text-primary transform transition-transform hover:scale-x-105',
                 { 'font-bold text-primary': location.pathname === path.contact } // Thêm lớp font-bold nếu liên kết là trang chủ
               )}
             >

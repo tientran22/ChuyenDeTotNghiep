@@ -16,6 +16,7 @@ import { purchaseStatus } from 'src/contains/purchase'
 import Popup from 'src/components/Popup/Popup'
 import { path } from 'src/contains/path'
 import { AppContext } from 'src/contexts/app.context'
+import axios from 'axios'
 
 export default function ProductDetail() {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false)
@@ -178,10 +179,12 @@ export default function ProductDetail() {
               </div>
               <div className='mt-8 flex items-center px-5 py-4 gap-4'>
                 <span className='text-gray-500 line-through truncate'>
-                  {product.price_before_discount === 0 ? '' : `₫${formatCurrency(product.price_before_discount)}`}
+                  {product.price_before_discount === product.price
+                    ? ''
+                    : `₫${formatCurrency(product.price_before_discount)}`}
                 </span>
                 <span className='font-medium text-3xl text-primary'>₫{formatCurrency(product.price)}</span>
-                {product.price_before_discount === 0 ? (
+                {product.price_before_discount === product.price ? (
                   ''
                 ) : (
                   <div className='ml-4 bg-primary px-1 py-2 text-white font-medium uppercase rounded-full text-xs'>

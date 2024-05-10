@@ -1,12 +1,12 @@
 export function getOrderStatus(status: string) {
   switch (status) {
-    case 'PLACED':
+    case 'pending':
       return (
         <span className='capitalize py-1 px-2 rounded-md text-xs text-sky-600 bg-sky-100'>
           {status.replace(/_/g, ' ').toLowerCase()}
         </span>
       )
-    case 'CONFIRMED':
+    case 'canceled':
       return (
         <span className='capitalize py-1 px-2 rounded-md text-xs text-orange-600 bg-orange-100'>
           {status.replace(/_/g, ' ').toLowerCase()}
@@ -24,7 +24,7 @@ export function getOrderStatus(status: string) {
           {status.replace(/_/g, ' ').toLowerCase()}
         </span>
       )
-    case 'DELIVERED':
+    case 'success':
       return (
         <span className='capitalize py-1 px-2 rounded-md text-xs text-green-600 bg-green-100'>
           {status.replace(/_/g, ' ').toLowerCase()}

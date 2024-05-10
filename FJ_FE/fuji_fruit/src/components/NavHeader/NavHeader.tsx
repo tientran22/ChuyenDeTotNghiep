@@ -5,12 +5,13 @@ import { AppContext } from 'src/contexts/app.context'
 import { Link, useLocation } from 'react-router-dom'
 import { path } from 'src/contains/path'
 import Popup from '../Popup/Popup'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import AuthApi from 'src/apis/auth.api'
 import { purchaseStatus } from 'src/contains/purchase'
 
 import http from 'src/utils/https'
 import { clearLS, setAccessTokentoLS, setProfileToLS } from 'src/utils/auth'
+import userApi from 'src/apis/user.api'
 
 interface CallbackData {
   access_token: string
@@ -41,6 +42,12 @@ export default function NavHeader() {
       console.log(data)
     }
   })
+
+  const { data: profileData, refetch } = useQuery({
+    queryKey: ['profile'],
+    queryFn: userApi.getProfile
+  })
+  const profileUser = profileData?.data.data
 
   const handleLogout = (openPopup: () => void) => {
     return () => {
@@ -94,7 +101,9 @@ export default function NavHeader() {
             clipRule='evenodd'
           />
         </svg>
-        <span className='italic'>08 đường A1, KĐT Vĩnh Điềm Trung, xã Vĩnh Hiệp, Nha Trang, Vietnam</span>
+        <span className='italic hidden md:block'>
+          08 đường A1, KĐT Vĩnh Điềm Trung, xã Vĩnh Hiệp, Nha Trang, Vietnam
+        </span>
       </div>
       <div className='flex justify-end'>
         <Popover
@@ -141,7 +150,10 @@ export default function NavHeader() {
             className='flex items-center hover:opacity-70 transition-all cursor-pointer ml-10 '
             renderPopover={
               <div className='relative rounded-sm border border-gray-200 bg-white shadow-md '>
-                <Link to='' className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-primary'>
+                <Link
+                  to={path.profile}
+                  className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-primary'
+                >
                   Tài khoản của tôi
                 </Link>
                 <Link
@@ -160,7 +172,11 @@ export default function NavHeader() {
             }
           >
             <div className='w-6 h-6 mr-2 flex-shrink-0'>
-              <img src='/src/assets/avatar.png' alt='' className='w-full h-full rounded-full object-cover' />
+              <img
+                src={`/src/assets/images/users/${profileUser?.avatar === null ? 'user.svg' : profileUser?.avatar}`}
+                alt=''
+                className='w-full h-full rounded-full object-cover'
+              />
             </div>
             <div className=''>{profile?.name}</div>
           </Popover>

@@ -1,21 +1,42 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useMutation } from '@tanstack/react-query'
-
+import axios from 'axios'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useLocation, useNavigate } from 'react-router-dom'
-import orderApi from 'src/apis/order.api'
-import Button from 'src/components/Button'
-import Input from 'src/components/Input'
-import { path } from 'src/contains/path'
-import { Order, OrderItem } from 'src/types/order.type'
-import { Purchase } from 'src/types/purchase.type'
 import { paymentSchema } from 'src/utils/rules'
-
+import * as CryptoJS from 'crypto-js'
+import Input from 'src/components/Input'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Purchase } from 'src/types/purchase.type'
 import { formatCurrency } from 'src/utils/utils'
+import Button from 'src/components/Button'
+import { useMutation } from '@tanstack/react-query'
+import { Order, OrderItem } from 'src/types/order.type'
+import orderApi from 'src/apis/order.api'
+import { path } from 'src/contains/path'
 
-type FormData = Pick<paymentSchema, 'name' | 'delivery_address' | 'phone_number' | 'note'>
+interface FormData {
+  name: string
+  delivery_address: string
+  phone_number: string
+  note?: string
+}
+
+interface InputData {
+  vnp_Version: string
+  vnp_TmnCode: string
+  vnp_Amount: number
+  vnp_Command: string
+  vnp_CreateDate: string
+  vnp_CurrCode: string
+  vnp_IpAddr: string
+  vnp_Locale: string
+  vnp_OrderInfo: string
+  vnp_OrderType: string
+  vnp_Returnurl: string
+  vnp_TxnRef: string
+  [key: string]: string | number // Ensure other properties can be string or number
+}
 
 export default function Payment() {
   const navigate = useNavigate()
@@ -23,11 +44,12 @@ export default function Payment() {
   const { state } = location
 
   const { checkedPurchases, totalCheckedPurchasePrice } = state
+
   const [formData, setFormData] = useState<Order>({
     id: '',
     status: '',
     name: '',
-    user_id: 0,
+    user_id: '',
     delivery_address: '',
     phone_number: '',
     total_amount: totalCheckedPurchasePrice as number,
@@ -47,6 +69,19 @@ export default function Payment() {
     resolver: yupResolver(paymentSchema)
   })
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+
+  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value
+    setFormData({
+      ...formData,
+      note: newValue
+    })
+  }
+
   // Tạo mutation function để gửi dữ liệu lên server
   const Ordermutation = useMutation({
     mutationFn: (body: {
@@ -58,21 +93,6 @@ export default function Payment() {
       items: OrderItem[]
     }) => orderApi.orderProducts(body)
   })
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    console.log(value)
-    console.log(name)
-    setFormData({ ...formData, [name]: value })
-  }
-
-  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value
-    setFormData({
-      ...formData,
-      note: newValue
-    })
-  }
 
   const onSubmit = handleSubmit(() => {
     // Gửi dữ liệu lên server
@@ -96,6 +116,34 @@ export default function Payment() {
       }
     )
   })
+
+  const createMomoPayment = async () => {
+    axios
+      .post('http://127.0.0.1:8000/api/payment', {
+        total_amount: formData.total_amount,
+        name: formData.name,
+        delivery_address: formData.delivery_address,
+        phone_number: formData.phone_number,
+        note: formData.note
+      })
+      .then((response) => {
+        // Nhận URL của Momo từ backend và thực hiện chuyển hướng
+        window.location.href = response.data.payUrl
+      })
+      .catch((error) => {
+        console.error('Error creating payment:', error)
+      })
+  }
+
+  const onSubmitMomo = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+    try {
+      const paymentResult = await createMomoPayment()
+      console.log(paymentResult) // Handle payment result
+    } catch (error) {
+      console.error('Error creating Momo payment:', error)
+    }
+  }
 
   return (
     <div className='bg-white pt-16'>
@@ -203,6 +251,7 @@ export default function Payment() {
                 </svg>
                 Thanh toán khi nhận hàng
               </div>
+
               <Button
                 type='submit'
                 className='w-full mt-4 p-3 uppercase text-white text-xs bg-primary hover:bg-primary/80 rounded-sm transition-all flex items-center justify-center'
@@ -210,6 +259,13 @@ export default function Payment() {
                 isLoading={Ordermutation.isPending}
               >
                 Đặt hàng
+              </Button>
+              <Button
+                type='submit'
+                className='w-full mt-4 p-3 uppercase text-white text-xs bg-pink-600 hover:bg-pink-600/80 rounded-sm transition-all flex items-center justify-center'
+                onClick={onSubmitMomo}
+              >
+                Thanh toan momo
               </Button>
             </div>
             {/* Phần phương thức thanh toán */}

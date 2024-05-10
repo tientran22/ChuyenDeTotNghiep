@@ -363,23 +363,23 @@ export default function Home() {
         </div>
 
         <div className='py-6'>
-          <div className='flex items-center justify-between text-xl font-semibold'>
+          <div className='flex items-center justify-between text-lg md:text-xl font-semibold'>
             <div className='flex'>
               Sản phẩm <AnimationText text=' Giỏ quà ' className='text-primary'></AnimationText>của Fuji Fruit
             </div>
 
             <button
               onClick={handleSeeAll}
-              className='flex items-center gap-2 px-4 py-2 bg-primary border-none outline-none text-white hover:bg-primary/90 rounded-sm '
+              className='flex items-center gap-2 px-4 py-2 bg-primary border-none outline-none text-white hover:bg-primary/90 rounded-sm text-sm'
             >
-              Xem ngay
+              <span className='hidden md:block'>Xem ngay</span>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
                 viewBox='0 0 24 24'
                 strokeWidth={1.5}
                 stroke='currentColor'
-                className='w-6 h-6'
+                className='w-4 h-4'
               >
                 <path strokeLinecap='round' strokeLinejoin='round' d='M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3' />
               </svg>
@@ -460,11 +460,11 @@ export default function Home() {
             </div>
             <div className='col-span-6'>
               <div className='text-primary uppercase'>Khát vọng vươn lên</div>
-              <div className='mt-4 text-6xl font-semibold'>
+              <div className='mt-4 text-xl md:text-6xl font-semibold'>
                 Niềm tự hào về <AnimationText text=' Chất lượng ' className='text-primary'></AnimationText> của fuji
                 Fruit
               </div>
-              <p className='mt-4 leading-6'>
+              <p className='mt-4 leading-6 text-sm md:text-lg '>
                 Chúng tôi luôn mong muốn và đã tạo ra nhiều giá trị về sức khỏe và niềm vui cho người dùng Việt. Điều đó
                 thật hạnh phúc khi thật vinh dự vì khách hàng đã tin tưởng vào dịch vụ và sản phẩm của Fuji Fruit. Khách
                 hàng và động lực lớn nhất để chúng tôi phát triển và lớn hơn từng ngày.
@@ -474,12 +474,12 @@ export default function Home() {
         </div>
 
         <div className='mt-12'>
-          <div className='grid grid-cols-12 gap-20'>
+          <div className='grid md:grid-cols-12 gap-20'>
             <div className='col-span-7'>
-              <div className='text-4xl font-semibold flex'>
+              <div className=' text-xl md:text-4xl font-semibold flex'>
                 Tại sao bạn <AnimationText text=' Lựa chọn ' className='text-primary'></AnimationText> chúng tôi
               </div>
-              <p className='mt-2 leading-6 '>
+              <p className='mt-2 leading-6 text-sm md:text-lg'>
                 Hoa quả sạch Fuji với đa dạng các trái cây nhập khẩu đến từ các nền nông nghiệp tiên tiến, hiện đại bậc
                 nhất thế giới: Nhật Bản, Hoa Kỳ, Hàn Quốc, Canada, Autralia,… đem đến dinh dưỡng và những sự lựa phong
                 phú người dùng
@@ -545,7 +545,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className='mt-4 text-4xl text-center text-primary font-semibold'>FeedBack từ khách hàng</div>
+          <div className='mt-4 text-xl md:text-4xl text-center text-primary font-semibold'>FeedBack từ khách hàng</div>
           <Slider {...settings}>
             {CommentsData.map((data) => (
               <div className='my-6' key={data.id}>
